@@ -1,16 +1,17 @@
 package org.manalith.irc.ui;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import swing2swt.layout.BorderLayout;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.manalith.irc.Application;
+
+import swing2swt.layout.BorderLayout;
 
 public class ApplicationWindow {
 	private Application application;
@@ -49,10 +50,8 @@ public class ApplicationWindow {
 		ToolItem tltmJoin = new ToolItem(toolBar, SWT.NONE);
 		tltmJoin.setText("Join");
 
-		CTabFolder tabFolder = new CTabFolder(shell, SWT.BORDER);
+		TabFolder tabFolder = new TabFolder(shell, SWT.BORDER);
 		tabFolder.setLayoutData(BorderLayout.CENTER);
-		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
 		shell.open();
 		shell.layout();
