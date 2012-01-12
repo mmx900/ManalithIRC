@@ -1,31 +1,37 @@
 package org.manalith.irc;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.configuration.Configuration;
+import org.manalith.irc.model.Connection;
 import org.manalith.irc.model.Server;
-import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 
 public class Application {
-	public Application() {
+	private Configuration configuration;
+	private List<Connection> connectionPool = new ArrayList<Connection>();
 
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 
-	public void connect(Server server) {
-		PircBotX bot = new PircBotX();
-		try {
-			bot.connect(server.getHostname(), server.getPort(),
-					server.getPassword());
-		} catch (NickAlreadyInUseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IrcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public Application(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public Connection createConnection(Server server) {
+		Connection connection = new Connection(server);
+		connectionPool.add(connection);
+		return connection;
+	}
+
+	public void disconnectAllConnection() {
+		for (Connection conn : connectionPool) {
+			conn.quitServer(configuration.getString("common.messages.disconnect"));
 		}
 	}
 }

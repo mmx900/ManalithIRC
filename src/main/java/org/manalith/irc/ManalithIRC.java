@@ -1,5 +1,6 @@
 package org.manalith.irc;
 
+import org.apache.commons.configuration.XMLConfiguration;
 import org.manalith.irc.ui.ApplicationWindow;
 
 public class ManalithIRC {
@@ -9,7 +10,13 @@ public class ManalithIRC {
 	 */
 	public static void main(String[] args) {
 		try {
-			Application application = new Application();
+			XMLConfiguration config = new XMLConfiguration("config.xml");
+			//config.setListDelimiter(',');
+			// DefaultConfigurationBuilder builder = new
+			// DefaultConfigurationBuilder(
+			// "config.xml");
+			// Configuration config = builder.getConfiguration();
+			Application application = new Application(config);
 			ApplicationWindow window = new ApplicationWindow(application);
 			window.open();
 		} catch (Exception e) {
