@@ -30,7 +30,7 @@ public class ApplicationWindowListener implements ActionListener {
 			server.setDefaultChannels(config.getList("server.defaultChannels"));
 
 			TabItem tbtmServer = window.createServerTab(server.getHostname());
-			ServerComposite composite = (ServerComposite) tbtmServer
+			ServerMessageView composite = (ServerMessageView) tbtmServer
 					.getControl();
 
 			Connection connection = application.createConnection(server);

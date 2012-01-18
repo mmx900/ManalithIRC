@@ -3,7 +3,7 @@ package org.manalith.irc;
 import java.util.Set;
 
 import org.eclipse.swt.widgets.Display;
-import org.manalith.irc.ui.ChannelComposite;
+import org.manalith.irc.ui.ChannelView;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -65,16 +65,16 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 public class ChannelListener extends ListenerAdapter implements Listener {
-	private ChannelComposite composite;
+	private ChannelView view;
 
-	public ChannelListener(ChannelComposite composite) {
-		this.composite = composite;
+	public ChannelListener(ChannelView composite) {
+		this.view = composite;
 	}
 
 	private void appendText(final String text) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				composite.getMessageOutput().append(text + "\n");
+				view.getMessageOutput().append(text + "\n");
 			}
 		});
 	}
@@ -83,9 +83,9 @@ public class ChannelListener extends ListenerAdapter implements Listener {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				for (User u : users) {
-					composite.getUserList().add(u.getNick());
+					view.getUserList().add(u.getNick());
 				}
-				composite.getUserList().redraw();
+				view.getUserList().redraw();
 			}
 		});
 	}

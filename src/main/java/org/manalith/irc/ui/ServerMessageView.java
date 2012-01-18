@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import swing2swt.layout.BorderLayout;
 
-public class ServerComposite extends Composite implements IrcTab {
+public class ServerMessageView extends Composite implements IrcTab {
 	private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	private StyledText messageOutput;
 
@@ -21,7 +21,7 @@ public class ServerComposite extends Composite implements IrcTab {
 	 * @param parent
 	 * @param style
 	 */
-	public ServerComposite(Composite parent, int style) {
+	public ServerMessageView(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
 

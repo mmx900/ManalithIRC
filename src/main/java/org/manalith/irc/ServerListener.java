@@ -4,8 +4,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabItem;
 import org.manalith.irc.model.Connection;
 import org.manalith.irc.ui.ApplicationWindow;
-import org.manalith.irc.ui.ChannelComposite;
-import org.manalith.irc.ui.ServerComposite;
+import org.manalith.irc.ui.ChannelView;
+import org.manalith.irc.ui.ServerMessageView;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -68,18 +68,18 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 public class ServerListener extends ListenerAdapter implements Listener {
 	private Connection connection;
 	private ApplicationWindow window;
-	private ServerComposite composite;
+	private ServerMessageView view;
 
 	public ServerListener(Connection connection, ApplicationWindow window,
-			ServerComposite composite) {
+			ServerMessageView view) {
 		this.window = window;
-		this.composite = composite;
+		this.view = view;
 	}
 
 	private void appendText(final String text) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				composite.getMessageOutput().append(text + "\n");
+				view.getMessageOutput().append(text + "\n");
 			}
 		});
 	}
@@ -130,7 +130,7 @@ public class ServerListener extends ListenerAdapter implements Listener {
 	public void onJoin(JoinEvent event) throws Exception {
 		TabItem channelTab = window.createChannelTab(event.getChannel()
 				.getName());
-		ChannelComposite composite = (ChannelComposite) channelTab.getControl();
+		ChannelView composite = (ChannelView) channelTab.getControl();
 		// TODO 채널 및 리스너를 관리해야 함
 		ChannelListener listener = new ChannelListener(composite);
 		connection.addEventListener(listener);

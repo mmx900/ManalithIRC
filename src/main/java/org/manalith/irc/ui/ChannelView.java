@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 import swing2swt.layout.BorderLayout;
 
-public class ChannelComposite extends Composite implements IrcTab {
+public class ChannelView extends Composite implements IrcTab {
 	private java.util.List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	private StyledText messageOutput;
 	private List list;
@@ -25,7 +25,7 @@ public class ChannelComposite extends Composite implements IrcTab {
 	 * @param parent
 	 * @param style
 	 */
-	public ChannelComposite(Composite parent, int style) {
+	public ChannelView(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
 

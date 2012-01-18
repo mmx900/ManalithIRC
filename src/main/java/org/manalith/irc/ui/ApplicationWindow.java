@@ -88,16 +88,16 @@ public class ApplicationWindow {
 	public TabItem createServerTab(String title) {
 		TabItem item = new TabItem(tabFolder, SWT.NONE);
 		item.setText(title);
-		ServerComposite composite = new ServerComposite(tabFolder, SWT.NONE);
-		item.setControl(composite);
+		ServerMessageView view = new ServerMessageView(tabFolder, SWT.NONE);
+		item.setControl(view);
 		return item;
 	}
 
 	public TabItem createChannelTab(String title) {
 		TabItem item = new TabItem(tabFolder, SWT.NONE);
 		item.setText(title);
-		ChannelComposite composite = new ChannelComposite(tabFolder, SWT.NONE);
-		item.setControl(composite);
+		ChannelView view = new ChannelView(tabFolder, SWT.NONE);
+		item.setControl(view);
 		return item;
 	}
 
