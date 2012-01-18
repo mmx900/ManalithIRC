@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.manalith.irc.Application;
 
 public class PropertyShell extends Shell {
 
@@ -18,9 +17,8 @@ public class PropertyShell extends Shell {
 	 * Create the shell.
 	 * 
 	 * @param display
-	 * @param application
 	 */
-	public PropertyShell(Display display, Application application) {
+	public PropertyShell(Display display) {
 		super(display, SWT.SHELL_TRIM);
 		createContents();
 	}

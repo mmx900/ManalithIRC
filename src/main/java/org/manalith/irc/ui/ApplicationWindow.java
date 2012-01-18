@@ -1,6 +1,8 @@
 package org.manalith.irc.ui;
 
-import org.apache.commons.configuration.Configuration;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -13,17 +15,18 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.manalith.irc.Application;
-import org.manalith.irc.model.Connection;
-import org.manalith.irc.model.Server;
 
 import swing2swt.layout.BorderLayout;
 
 public class ApplicationWindow {
-	private Application application;
+	public static final String EVENT_WINDOW_DISPOSED = "WindowDisposed";
 
-	public ApplicationWindow(Application application) {
-		this.application = application;
+	public static final String EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
+
+	private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	private TabFolder tabFolder;
+
+	public ApplicationWindow() {
 	}
 
 	/**
@@ -33,17 +36,17 @@ public class ApplicationWindow {
 	 */
 	public void open() {
 		final Display display = Display.getDefault();
-		Shell shell = new Shell();
+		final Shell shell = new Shell();
 		shell.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
-				application.disconnectAllConnection();
+				onAction(new Action(EVENT_WINDOW_DISPOSED, shell));
 			}
 		});
 		shell.setSize(450, 300);
 		shell.setText("Manalith IRC");
 		shell.setLayout(new BorderLayout(0, 0));
 
-		final TabFolder tabFolder = new TabFolder(shell, SWT.BORDER);
+		tabFolder = new TabFolder(shell, SWT.BORDER);
 		tabFolder.setLayoutData(BorderLayout.CENTER);
 
 		Menu menu = new Menu(shell, SWT.BAR);
@@ -52,33 +55,11 @@ public class ApplicationWindow {
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
 		toolBar.setLayoutData(BorderLayout.NORTH);
 
-		ToolItem tltmConnect = new ToolItem(toolBar, SWT.NONE);
+		final ToolItem tltmConnect = new ToolItem(toolBar, SWT.NONE);
 		tltmConnect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Configuration config = application.getConfiguration();
-				Server server = new Server();
-				server.setHostname(config.getString("server.host"));
-				server.setPort(config.getInt("server.port"));
-				server.setEncoding(config.getString("server.encoding"));
-				server.setVerbose(config.getBoolean("server.verbose"));
-				server.setNickname(config.getString("server.nickname"));
-				server.setDefaultChannels(config
-						.getList("server.defaultChannels"));
-
-				TabItem tbtmChannel = new TabItem(tabFolder, SWT.NONE);
-				tbtmChannel.setText(server.getHostname());
-
-				ChannelComposite composite = new ChannelComposite(tabFolder,
-						SWT.NONE);
-				tbtmChannel.setControl(composite);
-
-				Connection connection = application.createConnection(server);
-				composite.setConnection(connection);
-
-				if (connection.connect()) {
-					
-				}
+				onAction(new Action(EVENT_CONNECT_BUTTON_CLICKED, tltmConnect));
 			}
 		});
 		tltmConnect.setText("Connect");
@@ -90,7 +71,7 @@ public class ApplicationWindow {
 		tltmProperties.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				new PropertyShell(display, application).open();
+				new PropertyShell(display).open();
 			}
 		});
 		tltmProperties.setText("Properties");
@@ -101,6 +82,40 @@ public class ApplicationWindow {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
+		}
+	}
+
+	public TabItem createServerTab(String title) {
+		TabItem item = new TabItem(tabFolder, SWT.NONE);
+		item.setText(title);
+		ServerComposite composite = new ServerComposite(tabFolder, SWT.NONE);
+		item.setControl(composite);
+		return item;
+	}
+
+	public TabItem createChannelTab(String title) {
+		TabItem item = new TabItem(tabFolder, SWT.NONE);
+		item.setText(title);
+		ChannelComposite composite = new ChannelComposite(tabFolder, SWT.NONE);
+		item.setControl(composite);
+		return item;
+	}
+
+	public void closeTab(IrcTab tab) {
+
+	}
+
+	public void addActionListener(ActionListener listener) {
+		actionListeners.add(listener);
+	}
+
+	public void removeActionListener(ActionListener listener) {
+		actionListeners.remove(listener);
+	}
+
+	private void onAction(Action action) {
+		for (ActionListener listener : actionListeners) {
+			listener.onAction(action);
 		}
 	}
 }
