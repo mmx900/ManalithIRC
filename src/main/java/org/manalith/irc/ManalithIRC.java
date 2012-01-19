@@ -2,7 +2,7 @@ package org.manalith.irc;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.manalith.irc.ui.ApplicationWindow;
-import org.manalith.irc.ui.ApplicationWindowListener;
+import org.manalith.irc.ui.ApplicationListener;
 
 public class ManalithIRC {
 
@@ -19,7 +19,7 @@ public class ManalithIRC {
 			// Configuration config = builder.getConfiguration();
 			Application application = new Application(config);
 			ApplicationWindow window = new ApplicationWindow();
-			window.addActionListener(new ApplicationWindowListener(window,
+			window.addActionListener(new ApplicationListener(window,
 					application));
 			window.open();
 		} catch (Exception e) {

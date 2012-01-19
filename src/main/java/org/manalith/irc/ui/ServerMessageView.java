@@ -8,6 +8,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import swing2swt.layout.BorderLayout;
 
@@ -38,6 +39,18 @@ public class ServerMessageView extends Composite implements IrcTab {
 
 	public StyledText getMessageOutput() {
 		return messageOutput;
+	}
+
+	public void printMessage(String message) {
+		messageOutput.append(message + "\n");
+	}
+
+	public void printAsyncMessage(final String message) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				messageOutput.append(message + "\n");
+			}
+		});
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.manalith.irc.model.Connection;
 
 import swing2swt.layout.BorderLayout;
 
@@ -93,11 +94,14 @@ public class ApplicationWindow {
 		return item;
 	}
 
-	public TabItem createChannelTab(String title) {
+	public TabItem createChannelTab(String title, String channelName,
+			Connection connection) {
 		TabItem item = new TabItem(tabFolder, SWT.NONE);
 		item.setText(title);
-		ChannelView view = new ChannelView(tabFolder, SWT.NONE);
+		ChannelView view = new ChannelView(tabFolder, SWT.NONE, channelName,
+				connection);
 		item.setControl(view);
+		tabFolder.setSelection(item);
 		return item;
 	}
 
