@@ -1,6 +1,7 @@
 package org.manalith.irc.model;
 
 import org.eclipse.swt.widgets.Display;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -60,249 +61,264 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
-public class MockConnectionListener extends ListenerAdapter implements Listener {
+public class MockConnectionListener extends ListenerAdapter<PircBotX> implements
+		Listener<PircBotX> {
 	private void appendText(final String text) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				//do something
-				//styledText.append(text + "\n");
+				// do something
+				// styledText.append(text + "\n");
 			}
 		});
 	}
 
-	public void onAction(ActionEvent event) throws Exception {
+	public void onAction(ActionEvent<PircBotX> event) throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onChannelInfo(ChannelInfoEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onConnect(ConnectEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onDisconnect(DisconnectEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onFileTransferFinished(FileTransferFinishedEvent event)
+	public void onChannelInfo(ChannelInfoEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onFinger(FingerEvent event) throws Exception {
+	public void onConnect(ConnectEvent<PircBotX> event) throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onHalfOp(HalfOpEvent event) throws Exception {
+	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onIncomingChatRequest(IncomingChatRequestEvent event)
+	public void onFileTransferFinished(FileTransferFinishedEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onIncomingFileTransfer(IncomingFileTransferEvent event)
+	public void onFinger(FingerEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onHalfOp(HalfOpEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onIncomingChatRequest(IncomingChatRequestEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onInvite(InviteEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onJoin(JoinEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onKick(KickEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onMessage(MessageEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onMode(ModeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onMotd(MotdEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onNickChange(NickChangeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onNotice(NoticeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onOp(OpEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onOwner(OwnerEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onPart(PartEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onPing(PingEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onQuit(QuitEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onRemoveChannelBan(RemoveChannelBanEvent event)
+	public void onIncomingFileTransfer(IncomingFileTransferEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onRemoveChannelKey(RemoveChannelKeyEvent event)
+	public void onInvite(InviteEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onJoin(JoinEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onKick(KickEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onMode(ModeEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onMotd(MotdEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onOp(OpEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onOwner(OwnerEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onPart(PartEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onPing(PingEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onRemoveChannelLimit(RemoveChannelLimitEvent event)
+	public void onQuit(QuitEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onRemoveChannelBan(RemoveChannelBanEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event)
+	public void onRemoveChannelKey(RemoveChannelKeyEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onRemoveModerated(RemoveModeratedEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event)
+	public void onRemoveChannelLimit(RemoveChannelLimitEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onRemovePrivate(RemovePrivateEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onRemoveSecret(RemoveSecretEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event)
+	public void onRemoveInviteOnly(RemoveInviteOnlyEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onServerPing(ServerPingEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onServerResponse(ServerResponseEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetChannelBan(SetChannelBanEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetChannelKey(SetChannelKeyEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetChannelLimit(SetChannelLimitEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetInviteOnly(SetInviteOnlyEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetModerated(SetModeratedEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event)
+	public void onRemoveModerated(RemoveModeratedEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onSetPrivate(SetPrivateEvent event) throws Exception {
+	public void onRemoveNoExternalMessages(
+			RemoveNoExternalMessagesEvent<PircBotX> event) throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onSetSecret(SetSecretEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onSetTopicProtection(SetTopicProtectionEvent event)
+	public void onRemovePrivate(RemovePrivateEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onSuperOp(SuperOpEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onTime(TimeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onTopic(TopicEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onUnknown(UnknownEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onUserList(UserListEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onUserMode(UserModeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onVersion(VersionEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onVoice(VoiceEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onGenericCTCPCommand(GenericCTCPCommand event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onGenericUserMode(GenericUserModeEvent event) throws Exception {
-		appendText(event.getClass().getName());
-	}
-
-	public void onGenericChannelMode(GenericChannelModeEvent event)
+	public void onRemoveSecret(RemoveSecretEvent<PircBotX> event)
 			throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onGenericDCC(GenericDCCEvent event) throws Exception {
+	public void onRemoveTopicProtection(
+			RemoveTopicProtectionEvent<PircBotX> event) throws Exception {
 		appendText(event.getClass().getName());
 	}
 
-	public void onGenericMessage(GenericMessageEvent event) throws Exception {
+	public void onServerPing(ServerPingEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onServerResponse(ServerResponseEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetChannelBan(SetChannelBanEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetChannelKey(SetChannelKeyEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetChannelLimit(SetChannelLimitEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetInviteOnly(SetInviteOnlyEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetModerated(SetModeratedEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetNoExternalMessages(
+			SetNoExternalMessagesEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetPrivate(SetPrivateEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetSecret(SetSecretEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSetTopicProtection(SetTopicProtectionEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onSuperOp(SuperOpEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onTime(TimeEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onTopic(TopicEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onUnknown(UnknownEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onUserList(UserListEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onUserMode(UserModeEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onVersion(VersionEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onVoice(VoiceEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onGenericCTCPCommand(GenericCTCPCommand<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onGenericUserMode(GenericUserModeEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onGenericChannelMode(GenericChannelModeEvent<PircBotX> event)
+			throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onGenericDCC(GenericDCCEvent<PircBotX> event) throws Exception {
+		appendText(event.getClass().getName());
+	}
+
+	public void onGenericMessage(GenericMessageEvent<PircBotX> event)
+			throws Exception {
 		appendText(event.getClass().getName());
 	}
 }
