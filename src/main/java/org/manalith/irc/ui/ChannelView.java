@@ -1,6 +1,7 @@
 package org.manalith.irc.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -25,6 +26,8 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+
+import com.ibm.icu.text.SimpleDateFormat;
 
 import swing2swt.layout.BorderLayout;
 
@@ -54,8 +57,8 @@ public class ChannelView extends Composite implements IrcTab {
 		list = new List(this, SWT.BORDER | SWT.MULTI);
 		list.setLayoutData(BorderLayout.EAST);
 
-		messageOutput = new StyledText(this, SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL);
+		messageOutput = new StyledText(this, SWT.BORDER | SWT.V_SCROLL
+				| SWT.WRAP);
 		messageOutput.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				messageOutput.setTopIndex(messageOutput.getLineCount() - 1);
@@ -71,9 +74,9 @@ public class ChannelView extends Composite implements IrcTab {
 		printMessage(String.format("당신은 대화방 %s에 참여합니다.", channel.getName()));
 		printMessage(String.format("대화방 %s의 주제는 %s 입니다.", channel.getName(),
 				channel.getTopic()));
-		printMessage(String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %d)",
-				channel.getName(), channel.getTopicSetter(),
-				channel.getTopicTimestamp()));
+		printMessage(String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)", channel
+				.getName(), channel.getTopicSetter(), new SimpleDateFormat()
+				.format(new Date(channel.getTopicTimestamp()))));
 
 		messageInput = new Text(this, SWT.BORDER);
 		messageInput.setLayoutData(BorderLayout.SOUTH);
