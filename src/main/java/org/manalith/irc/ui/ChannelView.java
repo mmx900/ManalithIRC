@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
@@ -36,6 +38,7 @@ public class ChannelView extends Composite implements IrcTab {
 	private Text messageInput;
 	private String channelName;
 	private Connection connection;
+	private Color highlightColor;
 
 	/**
 	 * Create the composite.
@@ -92,6 +95,8 @@ public class ChannelView extends Composite implements IrcTab {
 
 		connection.addEventListener(new ChannelEventDispatcher());
 		addActionListener(new ActionAdapter());
+
+		highlightColor = getDisplay().getSystemColor(SWT.COLOR_RED);
 	}
 
 	public Text getMessageInput() {
@@ -106,10 +111,30 @@ public class ChannelView extends Composite implements IrcTab {
 		messageOutput.append(message + "\n");
 	}
 
+	public void printMessage(String message, Color color) {
+		int styleStart = messageOutput.getText().length();
+		int styleLength = message.length() + 1;
+
+		java.util.List<StyleRange> ranges = new ArrayList<StyleRange>();
+		ranges.add(new StyleRange(styleStart, styleLength, color, null,
+				SWT.BOLD));
+		messageOutput.append(message + "\n");
+		messageOutput.replaceStyleRanges(styleStart, styleLength,
+				ranges.toArray(new StyleRange[0]));
+	}
+
 	public void printAsyncMessage(final String message) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				printMessage(message);
+			}
+		});
+	}
+
+	public void printAsyncMessage(final String message, final Color color) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				printMessage(message, color);
 			}
 		});
 	}
@@ -200,8 +225,14 @@ public class ChannelView extends Composite implements IrcTab {
 		public void onMessage(MessageEvent<PircBotX> event) throws Exception {
 			if (event.getChannel() != null
 					&& event.getChannel().getName().equals(channelName)) {
-				printAsyncMessage(String.format("<%1s> %2s", event.getUser()
-						.getNick(), event.getMessage()));
+				if (event.getMessage().contains(connection.getNick())) {
+					printAsyncMessage(String.format("<%1s> %2s", event
+							.getUser().getNick(), event.getMessage()),
+							highlightColor);
+				} else {
+					printAsyncMessage(String.format("<%1s> %2s", event
+							.getUser().getNick(), event.getMessage()));
+				}
 			}
 		}
 
