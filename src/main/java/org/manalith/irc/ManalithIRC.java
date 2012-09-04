@@ -1,10 +1,19 @@
 package org.manalith.irc;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.log4j.Logger;
 import org.manalith.irc.ui.ApplicationWindow;
-import org.manalith.irc.ui.ApplicationListener;
 
+/**
+ * ManalithIRC Launcher
+ * 
+ * @author setzer
+ * 
+ */
 public class ManalithIRC {
+	private static final Logger logger = Logger.getLogger(ManalithIRC.class);
+	public static Application application;
 
 	/**
 	 * @param args
@@ -12,18 +21,10 @@ public class ManalithIRC {
 	public static void main(String[] args) {
 		try {
 			XMLConfiguration config = new XMLConfiguration("config.xml");
-			// config.setListDelimiter(',');
-			// DefaultConfigurationBuilder builder = new
-			// DefaultConfigurationBuilder(
-			// "config.xml");
-			// Configuration config = builder.getConfiguration();
-			Application application = new Application(config);
-			ApplicationWindow window = new ApplicationWindow();
-			window.addActionListener(new ApplicationListener(window,
-					application));
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
+			application = new Application(config);
+			ApplicationWindow.load();
+		} catch (ConfigurationException e) {
+			logger.error(e);
 		}
 	}
 }

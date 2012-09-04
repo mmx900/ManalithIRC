@@ -1,0 +1,22 @@
+<Shell xmlns="http://www.eclipse.org/xwt/presentation" xmlns:x="http://www.eclipse.org/xwt" x:Class="org.manalith.irc.ui.ApplicationWindow" text="ManalithIRC" disposeEvent="onWindowDispose">
+	<Shell.layout>
+		<GridLayout/>
+	</Shell.layout>
+	
+	<Shell.menuBar>
+		<Menu x:Style="BAR"/>
+	</Shell.menuBar>
+	<ToolBar x:Style="FLAT | RIGHT">
+		<ToolBar.layoutData>
+			<GridData horizontalAlignment="FILL" verticalAlignment="TOP" grabExcessHorizontalSpace="true"/>
+		</ToolBar.layoutData>
+		<ToolItem text="Connect" x:Name="tltmConnect" SelectionEvent="onConnectButtonClick" />
+		<ToolItem text="Join" x:Name="tltmJoin" SelectionEvent="onJoinButtonClick" />
+		<ToolItem text="Properties" x:Name="tltmProperties" SelectionEvent="onPropertiesButtonClick" />
+	</ToolBar>
+	<CTabFolder x:Style="BORDER" x:Name="tabFolder">
+		<CTabFolder.layoutData>
+			<GridData horizontalAlignment="FILL" verticalAlignment="FILL" grabExcessHorizontalSpace="true" grabExcessVerticalSpace="true"/>
+		</CTabFolder.layoutData>
+	</CTabFolder>>
+</Shell>

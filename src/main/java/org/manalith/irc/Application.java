@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.configuration.Configuration;
 import org.manalith.irc.model.Connection;
 import org.manalith.irc.model.Server;
+import org.manalith.irc.ui.ApplicationWindow;
 
 public class Application {
 	private Configuration configuration;
@@ -23,15 +24,17 @@ public class Application {
 		this.configuration = configuration;
 	}
 
-	public Connection createConnection(Server server) {
-		Connection connection = new Connection(server);
+	public Connection createConnection(Server server, ApplicationWindow window) {
+		Connection connection = new Connection(server, window);
 		connectionPool.add(connection);
 		return connection;
 	}
 
 	public void disconnectAllConnection() {
 		for (Connection conn : connectionPool) {
-			conn.quitServer(configuration.getString("common.messages.disconnect"));
+			conn.quitServer(configuration
+					.getString("common.messages.disconnect"));
+			conn.disconnect();
 		}
 	}
 }
