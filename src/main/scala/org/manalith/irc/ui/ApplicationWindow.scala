@@ -1,26 +1,22 @@
 package org.manalith.irc.ui;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
+import java.util.List
 
-import org.apache.commons.configuration.Configuration;
-import org.eclipse.e4.xwt.IConstants;
-import org.eclipse.e4.xwt.XWT;
-import org.eclipse.e4.xwt.annotation.UI;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Shell;
-import org.manalith.irc.Application;
-import org.manalith.irc.ManalithIRC;
-import org.manalith.irc.model.Connection;
-import org.manalith.irc.model.Server;
-import org.pircbotx.Channel;
-import scala.collection.JavaConversions._
+import scala.collection.JavaConversions.asScalaBuffer
+
+import org.eclipse.e4.xwt.IConstants
+import org.eclipse.e4.xwt.XWT
+import org.eclipse.e4.xwt.annotation.UI
+import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.CTabFolder
+import org.eclipse.swt.custom.CTabItem
+import org.eclipse.swt.widgets.Event
+import org.eclipse.swt.widgets.Shell
+import org.manalith.irc.ManalithIRC
+import org.manalith.irc.model.Connection
+import org.manalith.irc.model.Server
+import org.pircbotx.Channel
 
 class ApplicationWindow {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";

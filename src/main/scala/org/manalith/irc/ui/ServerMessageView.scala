@@ -2,6 +2,7 @@ package org.manalith.irc.ui;
 
 import java.util.ArrayList
 import java.util.List
+
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.ModifyEvent
@@ -61,7 +62,8 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent
 import org.pircbotx.hooks.types.GenericDCCEvent
 import org.pircbotx.hooks.types.GenericMessageEvent
 import org.pircbotx.hooks.types.GenericUserModeEvent
-import swing2swt.layout.BorderLayout;
+
+import swing2swt.layout.BorderLayout
 
 class ServerMessageView(parent: Composite, style: Int, private val connection: Connection) extends Composite(parent, style) with IrcTab {
 	private val actionListeners: List[ActionListener] = new ArrayList[ActionListener]();

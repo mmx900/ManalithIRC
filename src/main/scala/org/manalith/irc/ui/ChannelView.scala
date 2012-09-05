@@ -1,35 +1,37 @@
 package org.manalith.irc.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.Date
+import java.util.Set
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Text;
-import org.manalith.irc.model.Connection;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.JoinEvent;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.PartEvent;
-import org.pircbotx.hooks.events.QuitEvent;
-import scala.collection.JavaConversions._
+import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConversions.asScalaSet
 
-import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.StyleRange
+import org.eclipse.swt.custom.StyledText
+import org.eclipse.swt.events.KeyEvent
+import org.eclipse.swt.events.KeyListener
+import org.eclipse.swt.events.ModifyEvent
+import org.eclipse.swt.events.ModifyListener
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.widgets.List
+import org.eclipse.swt.widgets.Text
+import org.manalith.irc.model.Connection
+import org.pircbotx.Channel
+import org.pircbotx.PircBotX
+import org.pircbotx.User
+import org.pircbotx.hooks.ListenerAdapter
+import org.pircbotx.hooks.events.ActionEvent
+import org.pircbotx.hooks.events.JoinEvent
+import org.pircbotx.hooks.events.MessageEvent
+import org.pircbotx.hooks.events.PartEvent
+import org.pircbotx.hooks.events.QuitEvent
+
+import swing2swt.layout.BorderLayout
 
 class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection) extends Composite(parent, style) with IrcTab {
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";

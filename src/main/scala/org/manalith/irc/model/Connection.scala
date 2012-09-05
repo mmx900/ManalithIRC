@@ -1,10 +1,13 @@
 package org.manalith.irc.model;
 
 import java.io.IOException
+import java.lang.Runnable
+
+import scala.collection.JavaConversions.asScalaBuffer
+
 import org.apache.log4j.Logger
 import org.eclipse.swt.widgets.Display
 import org.manalith.irc.ui.ApplicationWindow
-import org.manalith.irc.ui.ChannelView
 import org.pircbotx.PircBotX
 import org.pircbotx.exception.IrcException
 import org.pircbotx.exception.NickAlreadyInUseException
@@ -12,9 +15,7 @@ import org.pircbotx.hooks.Listener
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.JoinEvent
 import org.pircbotx.hooks.events.TopicEvent
-import org.pircbotx.hooks.events.UserListEvent;
-import scala.collection.JavaConversions._
-import java.lang.Runnable
+import org.pircbotx.hooks.events.UserListEvent
 
 class Connection(server: Server, window: ApplicationWindow) {
 	lazy val logger = Logger.getLogger(this.getClass().getName());

@@ -1,13 +1,14 @@
 package org.manalith.irc;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
+import java.util.List
 
-import org.apache.commons.configuration.Configuration;
-import org.manalith.irc.model.Connection;
-import org.manalith.irc.model.Server;
-import org.manalith.irc.ui.ApplicationWindow;
-import scala.collection.JavaConversions._
+import scala.collection.JavaConversions.asScalaBuffer
+
+import org.apache.commons.configuration.Configuration
+import org.manalith.irc.model.Connection
+import org.manalith.irc.model.Server
+import org.manalith.irc.ui.ApplicationWindow
 
 class Application(val configuration: Configuration) {
 	private val connectionPool: List[Connection] = new ArrayList[Connection]();

@@ -1,6 +1,6 @@
 package org.manalith.irc.ui;
 
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.Widget
 
 class Action(var command: String, var source: Widget, var sourceContainer: Widget) {
 
