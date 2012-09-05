@@ -1,5 +1,6 @@
 package org.manalith.irc.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
@@ -26,8 +27,6 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
-
-import com.ibm.icu.text.SimpleDateFormat;
 
 import swing2swt.layout.BorderLayout;
 

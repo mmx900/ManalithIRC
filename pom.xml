@@ -49,8 +49,99 @@
   		<artifactId>groovy</artifactId>
   		<version>1.8.5</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.swt</groupId>
+  		<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+  		<version>3.100.0.v4233d</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.swt</groupId>
+  		<artifactId>org.eclipse.e4.xwt.forms</artifactId>
+  		<version>0.9.1.SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.swt</groupId>
+  		<artifactId>org.eclipse.e4.xwt</artifactId>
+  		<version>0.9.1.SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.swt</groupId>
+  		<artifactId>org.pushingpixels.trident</artifactId>
+  		<version>1.2.0.v20100204-1500</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>swing2swt</groupId>
+  		<artifactId>swing2swt</artifactId>
+  		<version>1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.ibm.icu</groupId>
+  		<artifactId>com.ibm.icu</artifactId>
+  		<version>4.4.2.v20110823</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jface</groupId>
+  		<artifactId>org.eclipse.jface.databinding</artifactId>
+  		<version>1.6.0.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jface</groupId>
+  		<artifactId>org.eclipse.jface.text</artifactId>
+  		<version>3.8.0.v20120531-0600</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jface</groupId>
+  		<artifactId>org.eclipse.jface</artifactId>
+  		<version>3.8.0.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.core</groupId>
+  		<artifactId>org.eclipse.core.commands</artifactId>
+  		<version>3.6.1.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.core</groupId>
+  		<artifactId>org.eclipse.core.databinding.observable</artifactId>
+  		<version>1.4.1.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.core</groupId>
+  		<artifactId>org.eclipse.core.databinding</artifactId>
+  		<version>1.4.1.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.core</groupId>
+  		<artifactId>org.eclipse.core.runtime</artifactId>
+  		<version>3.8.0.v20120521-2346</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.osgi</groupId>
+  		<artifactId>org.eclipse.osgi</artifactId>
+  		<version>3.8.0.v20120529-1548</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.text</groupId>
+  		<artifactId>org.eclipse.text</artifactId>
+  		<version>3.5.200.v20120523-1310</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.ui.forms</groupId>
+  		<artifactId>org.eclipse.ui.forms</artifactId>
+  		<version>3.5.200.v20120521-2329</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.ui.workbench</groupId>
+  		<artifactId>org.eclipse.ui.workbench</artifactId>
+  		<version>3.103.0.v20120530-1824</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.equinox.common</groupId>
+  		<artifactId>org.eclipse.equinox.common</artifactId>
+  		<version>3.6.100.v20120522-1841</version>
+  	</dependency>
   </dependencies>
   <repositories>
+  <!-- 
 	<repository>
 	    <id>lib</id>
 	    <name>lib</name>
@@ -62,10 +153,33 @@
 	        <enabled>false</enabled>
 	    </snapshots>
 	    <url>file://${project.basedir}/lib</url>
-	</repository>
+	</repository> -->
   </repositories>
 	<build>
 		<plugins>
+	      <plugin>
+	        <artifactId>maven-resources-plugin</artifactId>
+	        <version>2.6</version>
+	        <executions>
+	          <execution>
+	            <id>copy-resources</id>
+	            <!-- here the phase you need -->
+	            <phase>compile</phase>
+	            <goals>
+	              <goal>copy-resources</goal>
+	            </goals>
+	            <configuration>
+	              <outputDirectory>target/classes</outputDirectory>
+	              <resources>          
+	                <resource>
+	                  <directory>src/main/resources</directory>
+	                  <filtering>false</filtering>
+	                </resource>
+	              </resources>              
+	            </configuration>            
+	          </execution>
+	        </executions>
+	      </plugin>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>

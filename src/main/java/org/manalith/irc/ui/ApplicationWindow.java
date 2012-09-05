@@ -34,7 +34,7 @@ public class ApplicationWindow {
 	private CTabFolder tabFolder;
 
 	public ApplicationWindow() {
-		this.application = ManalithIRC.application;
+		this.application = ManalithIRC.application();
 		addActionListener(new ApplicationWindowActionListener());
 	}
 

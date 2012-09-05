@@ -7,24 +7,25 @@ import org.manalith.irc.ui.ApplicationWindow;
 
 /**
  * ManalithIRC Launcher
- * 
+ *
  * @author setzer
- * 
+ *
  */
-public class ManalithIRC {
-	private static final Logger logger = Logger.getLogger(ManalithIRC.class);
-	public static Application application;
+object ManalithIRC {
+	private val logger = Logger.getLogger(this.getClass());
+	var application: Application = null;
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	def main(args: Array[String]) {
 		try {
-			XMLConfiguration config = new XMLConfiguration("config.xml");
+			val config = new XMLConfiguration("config.xml");
 			application = new Application(config);
 			ApplicationWindow.load();
-		} catch (ConfigurationException e) {
-			logger.error(e);
+		} catch {
+			case e: ConfigurationException =>
+				logger.error(e);
 		}
 	}
 }
