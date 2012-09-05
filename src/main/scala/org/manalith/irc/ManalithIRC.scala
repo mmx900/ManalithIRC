@@ -1,9 +1,10 @@
 package org.manalith.irc;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.commons.configuration.ConfigurationException
+import org.apache.commons.configuration.XMLConfiguration
+import org.apache.log4j.Logger
 import org.manalith.irc.ui.ApplicationWindow;
+import org.manalith.irc.ui.ApplicationWindowLoader
 
 /**
  * ManalithIRC Launcher
@@ -22,7 +23,7 @@ object ManalithIRC {
 		try {
 			val config = new XMLConfiguration("config.xml");
 			application = new Application(config);
-			ApplicationWindow.load();
+			ApplicationWindowLoader.load;
 		} catch {
 			case e: ConfigurationException =>
 				logger.error(e);

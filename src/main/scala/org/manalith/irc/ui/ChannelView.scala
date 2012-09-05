@@ -27,39 +27,30 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import scala.collection.JavaConversions._
 
 import swing2swt.layout.BorderLayout;
 
-public class ChannelView extends Composite implements IrcTab {
-	public static final String EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
+class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection) extends Composite(parent, style) with IrcTab {
+	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
-	private java.util.List<ActionListener> actionListeners = new ArrayList<ActionListener>();
-	private StyledText messageOutput;
-	private List list;
-	private Text topic;
-	private Text messageInput;
-	private String channelName;
-	private Connection connection;
-	private Color highlightColor;
+	private val actionListeners: java.util.List[ActionListener] = new ArrayList[ActionListener]();
 
-	/**
-	 * Create the composite.
-	 * 
-	 * @param parent
-	 * @param style
-	 */
-	public ChannelView(Composite parent, int style, Channel channel,
-			Connection connection) {
-		super(parent, style);
-		setLayout(new BorderLayout(0, 0));
+	setLayout(new BorderLayout(0, 0));
+	var messageOutput: StyledText = null;
+	val userList: List = new List(this, SWT.BORDER | SWT.MULTI);
+	private var topic: Text = null;
+	var messageInput: Text = null;
+	var channelName: String = channel.getName();
+	private var highlightColor: Color = null;
 
-		list = new List(this, SWT.BORDER | SWT.MULTI);
-		list.setLayoutData(BorderLayout.EAST);
+	{
+		userList.setLayoutData(BorderLayout.EAST);
 
 		messageOutput = new StyledText(this, SWT.BORDER | SWT.V_SCROLL
-				| SWT.WRAP);
+			| SWT.WRAP);
 		messageOutput.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
+			def modifyText(e: ModifyEvent) = {
 				messageOutput.setTopIndex(messageOutput.getLineCount() - 1);
 			}
 		});
@@ -72,28 +63,25 @@ public class ChannelView extends Composite implements IrcTab {
 
 		printMessage(String.format("당신은 대화방 %s에 참여합니다.", channel.getName()));
 		printMessage(String.format("대화방 %s의 주제는 %s 입니다.", channel.getName(),
-				channel.getTopic()));
+			channel.getTopic()));
 		printMessage(String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)", channel
-				.getName(), channel.getTopicSetter(), new SimpleDateFormat()
-				.format(new Date(channel.getTopicTimestamp()))));
+			.getName(), channel.getTopicSetter(), new SimpleDateFormat()
+			.format(new Date(channel.getTopicTimestamp()))));
 
 		messageInput = new Text(this, SWT.BORDER);
 		messageInput.setLayoutData(BorderLayout.SOUTH);
 		messageInput.addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
+			def keyPressed(e: KeyEvent) {
 				if (e.character == SWT.CR) {
 					onAction(new Action(EVENT_MESSAGE_SUBMITTED, messageInput,
-							ChannelView.this));
+						ChannelView.this));
 				}
 			}
 
-			public void keyReleased(KeyEvent e) {
+			def keyReleased(e: KeyEvent) {
 				// ignore
 			}
 		});
-
-		this.channelName = channel.getName();
-		this.connection = connection;
 
 		connection.addEventListener(new ChannelEventDispatcher());
 		addActionListener(new ActionAdapter());
@@ -101,112 +89,95 @@ public class ChannelView extends Composite implements IrcTab {
 		highlightColor = getDisplay().getSystemColor(SWT.COLOR_RED);
 	}
 
-	public Text getMessageInput() {
-		return messageInput;
-	}
-
-	public StyledText getMessageOutput() {
-		return messageOutput;
-	}
-
-	public void printMessage(String message) {
+	def printMessage(message: String) = {
 		messageOutput.append(message + "\n");
 	}
 
-	public void printMessage(String message, Color color) {
-		int styleStart = messageOutput.getText().length();
-		int styleLength = message.length() + 1;
+	def printMessage(message: String, color: Color) = {
+		val styleStart = messageOutput.getText().length();
+		val styleLength = message.length() + 1;
 
-		java.util.List<StyleRange> ranges = new ArrayList<StyleRange>();
+		val ranges = new ArrayList[StyleRange]();
 		ranges.add(new StyleRange(styleStart, styleLength, color, null,
-				SWT.BOLD));
+			SWT.BOLD));
 		messageOutput.append(message + "\n");
 		messageOutput.replaceStyleRanges(styleStart, styleLength,
-				ranges.toArray(new StyleRange[0]));
+			ranges.toArray(new Array[StyleRange](0)));
 	}
 
-	public void printAsyncMessage(final String message) {
+	def printAsyncMessage(message: String) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			def run = {
 				printMessage(message);
 			}
 		});
 	}
 
-	public void printAsyncMessage(final String message, final Color color) {
+	def printAsyncMessage(message: String, color: Color) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			def run = {
 				printMessage(message, color);
 			}
 		});
 	}
 
-	public List getUserList() {
-		return list;
-	}
-
-	@Override
-	protected void checkSubclass() {
+	override def checkSubclass = {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	public void addActionListener(ActionListener listener) {
+	def addActionListener(listener: ActionListener) {
 		actionListeners.add(listener);
 	}
 
-	public void removeActionListener(ActionListener listener) {
+	def removeActionListener(listener: ActionListener) {
 		actionListeners.remove(listener);
 	}
 
-	private void onAction(Action action) {
-		for (ActionListener listener : actionListeners) {
+	private def onAction(action: Action) {
+		for (listener <- actionListeners) {
 			listener.onAction(action);
 		}
 	}
 
-	public String getChannelName() {
-		return channelName;
-	}
-
-	public void setTopic(String topic) {
+	def setTopic(topic: String) = {
 		this.topic.setText(topic);
 	}
 
-	public void updateUserList(final Set<User> users) {
-		for (User u : users) {
-			getUserList().add(u.getNick());
+	def updateUserList(users: Set[User]) {
+		for (u <- users) {
+			userList.add(u.getNick());
 		}
-		getUserList().redraw();
+		userList.redraw();
 	}
 
-	private class ActionAdapter implements ActionListener {
-		public void onAction(Action action) {
-			switch (action.getCommand()) {
-			case EVENT_MESSAGE_SUBMITTED: {
-				String message = getMessageInput().getText();
-				connection.sendMessage(getChannelName(), message);
-				getMessageInput().setText("");
-				printMessage(String.format("<%1s> %2s", connection.getNick(),
+	private class ActionAdapter extends ActionListener {
+		def onAction(action: Action) {
+			action.command match {
+				case EVENT_MESSAGE_SUBMITTED => {
+					var message = messageInput.getText();
+					connection.sendMessage(channelName, message);
+					messageInput.setText("");
+					printMessage(String.format("<%1s> %2s", connection.nick,
 						message));
-				break;
-			}
+				}
 			}
 		}
 	}
 
-	private class ChannelEventDispatcher extends ListenerAdapter<PircBotX> {
-		public void onAction(final ActionEvent<PircBotX> event)
-				throws Exception {
+	private class ChannelEventDispatcher extends ListenerAdapter[PircBotX] {
+		@throws(classOf[Exception])
+		override def onAction(event: ActionEvent[PircBotX]) {
 			printAsyncMessage(String.format("\t\t %1s %2s", event.getUser()
-					.getNick(), event.getMessage()));
+				.getNick(), event.getMessage()));
 		}
 
-		public void onPart(final PartEvent<PircBotX> event) throws Exception {
+		@throws(classOf[Exception])
+		override def onPart(event: PartEvent[PircBotX]) {
 			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					String nick = event.getUser().getNick();
+				def run() {
+					val nick = event.getUser().getNick();
 
-					if (nick.equals(connection.getNick())) {
+					if (nick.equals(connection.nick)) {
 						// TODO
 						/*
 						 * TabItem channelTab =
@@ -218,38 +189,41 @@ public class ChannelView extends Composite implements IrcTab {
 						 */
 					} else {
 						printMessage(String.format("%1s 님이 퇴장하셨습니다. (%2s)",
-								nick, event.getReason()));
+							nick, event.getReason()));
 					}
 				}
 			});
 		}
 
-		public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+		@throws(classOf[Exception])
+		override def onMessage(event: MessageEvent[PircBotX]) {
 			if (event.getChannel() != null
-					&& event.getChannel().getName().equals(channelName)) {
-				if (event.getMessage().contains(connection.getNick())) {
+				&& event.getChannel().getName().equals(channelName)) {
+				if (event.getMessage().contains(connection.nick)) {
 					printAsyncMessage(String.format("<%1s> %2s", event
-							.getUser().getNick(), event.getMessage()),
-							highlightColor);
+						.getUser().getNick(), event.getMessage()),
+						highlightColor);
 				} else {
 					printAsyncMessage(String.format("<%1s> %2s", event
-							.getUser().getNick(), event.getMessage()));
+						.getUser().getNick(), event.getMessage()));
 				}
 			}
 		}
 
-		public void onJoin(final JoinEvent<PircBotX> event) throws Exception {
-			String nick = event.getUser().getNick();
+		@throws(classOf[Exception])
+		override def onJoin(event: JoinEvent[PircBotX]) {
+			val nick = event.getUser().getNick();
 
 			if (channelName.equals(event.getChannel().getName())
-					&& !nick.equals(connection.getNick())) {
+				&& !nick.equals(connection.nick)) {
 				printMessage(String.format("%1s 님이 입장하셨습니다.", nick));
 			}
 		}
 
-		public void onQuit(final QuitEvent<PircBotX> event) throws Exception {
+		@throws(classOf[Exception])
+		override def onQuit(event: QuitEvent[PircBotX]) {
 			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
+				def run() {
 					// TODO 셀프일 경우 닫기, 타인일 경우 표시
 					/*
 					 * Connection connection = getConnection(event.getBot()
