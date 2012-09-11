@@ -2,9 +2,7 @@ package org.manalith.irc.model;
 
 import java.io.IOException
 import java.lang.Runnable
-
 import scala.collection.JavaConversions.asScalaBuffer
-
 import org.apache.log4j.Logger
 import org.eclipse.swt.widgets.Display
 import org.manalith.irc.ui.ApplicationWindow
@@ -16,9 +14,9 @@ import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.JoinEvent
 import org.pircbotx.hooks.events.TopicEvent
 import org.pircbotx.hooks.events.UserListEvent
+import org.manalith.irc.helper.LogHelper
 
-class Connection(server: Server, window: ApplicationWindow) {
-	lazy val logger = Logger.getLogger(this.getClass().getName());
+class Connection(server: Server, window: ApplicationWindow) extends LogHelper {
 	private var bot: PircBotX = new PircBotX();
 	addEventListener(new EventListener());
 

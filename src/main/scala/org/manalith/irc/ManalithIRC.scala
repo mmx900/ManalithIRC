@@ -4,6 +4,7 @@ import org.apache.commons.configuration.ConfigurationException
 import org.apache.commons.configuration.XMLConfiguration
 import org.apache.log4j.Logger
 import org.manalith.irc.ui.ApplicationWindowLoader
+import org.manalith.irc.helper.LogHelper
 
 /**
  * ManalithIRC Launcher
@@ -11,8 +12,7 @@ import org.manalith.irc.ui.ApplicationWindowLoader
  * @author setzer
  *
  */
-object ManalithIRC {
-	private val logger = Logger.getLogger(this.getClass());
+object ManalithIRC extends LogHelper{
 	var application: Application = null;
 
 	/**
