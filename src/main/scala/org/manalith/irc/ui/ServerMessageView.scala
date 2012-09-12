@@ -62,11 +62,13 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent
 import org.pircbotx.hooks.types.GenericDCCEvent
 import org.pircbotx.hooks.types.GenericMessageEvent
 import org.pircbotx.hooks.types.GenericUserModeEvent
+import scala.collection.mutable.Publisher
 
 import swing2swt.layout.BorderLayout
 
-class ServerMessageView(parent: Composite, style: Int, private val connection: Connection) extends Composite(parent, style) with IrcTab {
-	private val actionListeners: List[ActionListener] = new ArrayList[ActionListener]();
+class ServerMessageView(parent: Composite, style: Int, private val connection: Connection)
+	extends Composite(parent, style)
+	with IrcTab with Publisher[Action] {
 
 	setLayout(new BorderLayout(0, 0));
 
@@ -81,7 +83,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 	messageOutput.setLayoutData(BorderLayout.CENTER);
 
 	connection.addEventListener(new ServerEventDispatcher());
-	addActionListener(new ActionAdapter());
 
 	def printMessage(message: String) = {
 		messageOutput.append(message + "\n");
@@ -97,22 +98,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 
 	override def checkSubclass = {
 		// Disable the check that prevents subclassing of SWT components
-	}
-
-	def addActionListener(listener: ActionListener) = {
-		actionListeners.add(listener);
-	}
-
-	def removeActionListener(listener: ActionListener) = {
-		actionListeners.remove(listener);
-	}
-
-	private class ActionAdapter extends ActionListener {
-		def onAction(action: Action) = {
-			//			switch (action.command()) {
-			//
-			//			}
-		}
 	}
 
 	private class ServerEventDispatcher extends ListenerAdapter[PircBotX] {

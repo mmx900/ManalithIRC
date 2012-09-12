@@ -1,4 +1,4 @@
-<Shell xmlns="http://www.eclipse.org/xwt/presentation" xmlns:x="http://www.eclipse.org/xwt" x:Class="org.manalith.irc.ui.ApplicationWindow" text="ManalithIRC" disposeEvent="onWindowDispose">
+<Shell xmlns="http://www.eclipse.org/xwt/presentation" xmlns:x="http://www.eclipse.org/xwt" x:Class="org.manalith.irc.ui.ApplicationWindow" text="ManalithIRC" disposeEvent="onWindowDispose" x:Name="shell">
 	<Shell.layout>
 		<GridLayout/>
 	</Shell.layout>

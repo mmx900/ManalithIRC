@@ -7,6 +7,8 @@ import java.util.Set
 
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.asScalaSet
+import scala.collection.mutable.Publisher
+import scala.collection.mutable.Subscriber
 
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyleRange
@@ -33,10 +35,10 @@ import org.pircbotx.hooks.events.QuitEvent
 
 import swing2swt.layout.BorderLayout
 
-class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection) extends Composite(parent, style) with IrcTab {
+class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection)
+	extends Composite(parent, style)
+	with IrcTab with Publisher[Action] {
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
-
-	private val actionListeners: java.util.List[ActionListener] = new ArrayList[ActionListener]();
 
 	setLayout(new BorderLayout(0, 0));
 	var messageOutput: StyledText = null;
@@ -75,7 +77,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		messageInput.addKeyListener(new KeyListener() {
 			def keyPressed(e: KeyEvent) {
 				if (e.character == SWT.CR) {
-					onAction(new Action(EVENT_MESSAGE_SUBMITTED, messageInput,
+					publish(new Action(EVENT_MESSAGE_SUBMITTED, messageInput,
 						ChannelView.this));
 				}
 			}
@@ -86,7 +88,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		});
 
 		connection.addEventListener(new ChannelEventDispatcher());
-		addActionListener(new ActionAdapter());
+		subscribe(new ActionAdapter());
 
 		highlightColor = getDisplay().getSystemColor(SWT.COLOR_RED);
 	}
@@ -127,20 +129,6 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	def addActionListener(listener: ActionListener) {
-		actionListeners.add(listener);
-	}
-
-	def removeActionListener(listener: ActionListener) {
-		actionListeners.remove(listener);
-	}
-
-	private def onAction(action: Action) {
-		for (listener <- actionListeners) {
-			listener.onAction(action);
-		}
-	}
-
 	def setTopic(topic: String) = {
 		this.topic.setText(topic);
 	}
@@ -152,8 +140,8 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		userList.redraw();
 	}
 
-	private class ActionAdapter extends ActionListener {
-		def onAction(action: Action) {
+	private class ActionAdapter extends Subscriber[Action, Publisher[Action]] {
+		def notify(pub: Publisher[Action], action: Action) = {
 			action.command match {
 				case EVENT_MESSAGE_SUBMITTED => {
 					var message = messageInput.getText();

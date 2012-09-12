@@ -2,9 +2,7 @@ package org.manalith.irc.ui;
 
 import java.util.ArrayList
 import java.util.List
-
 import scala.collection.JavaConversions.asScalaBuffer
-
 import org.eclipse.e4.xwt.IConstants
 import org.eclipse.e4.xwt.XWT
 import org.eclipse.e4.xwt.annotation.UI
@@ -17,23 +15,30 @@ import org.manalith.irc.ManalithIRC
 import org.manalith.irc.model.Connection
 import org.manalith.irc.model.Server
 import org.pircbotx.Channel
+import org.eclipse.e4.xwt.jface.XWTDialog
+import org.eclipse.jface.dialogs.InputDialog
+import org.apache.commons.lang3.StringUtils
+import scala.collection.mutable.Publisher
+import scala.collection.mutable.Subscriber
 
-class ApplicationWindow {
+class ApplicationWindow extends Publisher[Action] {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
 	private val EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
 
 	private lazy val application = ManalithIRC.application;
-	private val actionListeners: List[ActionListener] = new ArrayList[ActionListener]();
 	val channelViewList: List[ChannelView] = new ArrayList[ChannelView]();
 
-	addActionListener(new ApplicationWindowActionListener());
+	subscribe(new ApplicationWindowActionListener());
+
+	@UI
+	private var shell: Shell = null;
 
 	@UI
 	private var tabFolder: CTabFolder = null;
 
 	def getChannelView(channelName: String): ChannelView = {
 		for (view <- channelViewList) {
-			if (view.channelName.equals(channelName)) {
+			if (view.channelName == channelName) {
 				return view;
 			}
 		}
@@ -69,26 +74,12 @@ class ApplicationWindow {
 
 	}
 
-	def addActionListener(listener: ActionListener) {
-		actionListeners.add(listener);
-	}
-
-	def removeActionListener(listener: ActionListener) {
-		actionListeners.remove(listener);
-	}
-
-	def onAction(action: Action) {
-		for (listener <- actionListeners) {
-			listener.onAction(action);
-		}
-	}
-
 	def onWindowDispose(event: Event) {
-		onAction(new Action(EVENT_WINDOW_DISPOSED, event.widget));
+		publish(new Action(EVENT_WINDOW_DISPOSED, event.widget));
 	}
 
 	def onConnectButtonClick(event: Event) {
-		onAction(new Action(EVENT_CONNECT_BUTTON_CLICKED, event.widget));
+		publish(new Action(EVENT_CONNECT_BUTTON_CLICKED, event.widget));
 	}
 
 	def onJoinButtonClick(event: Event) {
@@ -98,8 +89,8 @@ class ApplicationWindow {
 		new PropertyShell(event.widget.getDisplay()).open();
 	}
 
-	private class ApplicationWindowActionListener extends ActionListener {
-		def onAction(action: Action) {
+	private class ApplicationWindowActionListener extends Subscriber[Action, Publisher[Action]] {
+		def notify(pub: Publisher[Action], action: Action) = {
 			action.command match {
 				case EVENT_CONNECT_BUTTON_CLICKED => {
 					// XXX
@@ -122,7 +113,7 @@ class ApplicationWindow {
 						connection);
 					val view = serverTab
 						.getControl().asInstanceOf[ServerMessageView];
-					view.addActionListener(this);
+					view.subscribe(this);
 
 					if (connection.connect) {
 
@@ -138,7 +129,7 @@ class ApplicationWindow {
 
 object ApplicationWindowLoader {
 	def load = {
-		var url = classOf[ApplicationWindow].getResource(classOf[ApplicationWindow]
+		val url = classOf[ApplicationWindow].getResource(classOf[ApplicationWindow]
 			.getSimpleName() + IConstants.XWT_EXTENSION_SUFFIX);
 
 		try {
