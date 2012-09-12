@@ -5,6 +5,8 @@ import org.apache.commons.configuration.XMLConfiguration
 import org.apache.log4j.Logger
 import org.manalith.irc.ui.ApplicationWindowLoader
 import org.manalith.irc.helper.LogHelper
+import org.manalith.irc.model.ConnectionManager
+import org.apache.commons.configuration.Configuration
 
 /**
  * ManalithIRC Launcher
@@ -12,20 +14,24 @@ import org.manalith.irc.helper.LogHelper
  * @author setzer
  *
  */
-object ManalithIRC extends LogHelper{
-	var application: Application = null;
+object ManalithIRC extends LogHelper {
+	var config: Configuration = null;
 
 	/**
 	 * @param args
 	 */
 	def main(args: Array[String]) {
 		try {
-			val config = new XMLConfiguration("config.xml");
-			application = new Application(config);
+			config = new XMLConfiguration("config.xml");
 			ApplicationWindowLoader.load;
 		} catch {
 			case e: ConfigurationException =>
 				logger.error(e);
 		}
+	}
+
+	def onExit() {
+		ConnectionManager.disconnectAllConnection(config
+			.getString("common.messages.disconnect"));
 	}
 }

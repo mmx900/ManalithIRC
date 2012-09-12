@@ -1,24 +1,16 @@
 package org.manalith.irc.model;
 
 import java.io.IOException
-import java.lang.Runnable
+
 import scala.collection.JavaConversions.asScalaBuffer
-import org.apache.log4j.Logger
-import org.eclipse.swt.widgets.Display
-import org.manalith.irc.ui.ApplicationWindow
+
+import org.manalith.irc.helper.LogHelper
 import org.pircbotx.PircBotX
 import org.pircbotx.exception.IrcException
 import org.pircbotx.exception.NickAlreadyInUseException
 import org.pircbotx.hooks.Listener
-import org.pircbotx.hooks.ListenerAdapter
-import org.pircbotx.hooks.events.JoinEvent
-import org.pircbotx.hooks.events.TopicEvent
-import org.pircbotx.hooks.events.UserListEvent
-import org.manalith.irc.helper.LogHelper
 
-class Connection(server: Server, window: ApplicationWindow) extends LogHelper {
-	private var bot: PircBotX = new PircBotX();
-	addEventListener(new EventListener());
+class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 
 	def connect: Boolean = {
 		if (bot.isConnected()) {
@@ -67,58 +59,9 @@ class Connection(server: Server, window: ApplicationWindow) extends LogHelper {
 		bot.getListenerManager().removeListener(listener);
 	}
 
-	def getServer = server;
-
 	def sendMessage(target: String, message: String) = {
 		bot.sendMessage(target, message);
 	}
 
 	def nick = bot.getNick();
-
-	private class EventListener extends ListenerAdapter[PircBotX] {
-		@throws(classOf[Exception])
-		override def onTopic(event: TopicEvent[PircBotX]) = {
-			val view = window.getChannelView(event.getChannel()
-				.getName());
-			if (view != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					def run = {
-						view.setTopic(event.getTopic());
-					}
-				});
-			}
-		}
-
-		@throws(classOf[Exception])
-		override def onUserList(event: UserListEvent[PircBotX]) = {
-			val view = window.getChannelView(event.getChannel()
-				.getName());
-			if (view != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					def run = {
-						view.updateUserList(event.getUsers());
-					}
-				});
-			}
-		}
-
-		@throws(classOf[Exception])
-		override def onJoin(event: JoinEvent[PircBotX]) = {
-			val nick = event.getUser().getNick();
-
-			if (nick.equals(nick)) {
-				val view = window.getChannelView(event
-					.getChannel().getName());
-
-				if (view == null) {
-					Display.getDefault().asyncExec(new Runnable() {
-						def run = {
-							window.createChannelTab(event.getChannel(),
-								Connection.this);
-						}
-					});
-				}
-			}
-		}
-	}
 }

@@ -20,12 +20,18 @@ import org.eclipse.jface.dialogs.InputDialog
 import org.apache.commons.lang3.StringUtils
 import scala.collection.mutable.Publisher
 import scala.collection.mutable.Subscriber
+import org.eclipse.swt.widgets.Display
+import org.pircbotx.hooks.events.JoinEvent
+import org.pircbotx.hooks.events.UserListEvent
+import org.pircbotx.hooks.ListenerAdapter
+import org.pircbotx.hooks.events.TopicEvent
+import org.pircbotx.PircBotX
+import org.manalith.irc.model.ConnectionManager
 
 class ApplicationWindow extends Publisher[Action] {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
 	private val EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
 
-	private lazy val application = ManalithIRC.application;
 	val channelViewList: List[ChannelView] = new ArrayList[ChannelView]();
 
 	subscribe(new ApplicationWindowActionListener());
@@ -83,6 +89,15 @@ class ApplicationWindow extends Publisher[Action] {
 	}
 
 	def onJoinButtonClick(event: Event) {
+		//		val dlg = new InputDialog(shell, null, null, null, null);
+		//		dlg.open();
+		//		val channelName = dlg.getValue();
+		//		if (StringUtils.isNotBlank(channelName)) {
+		//			createChannelTab(channel, connection)
+		//		}
+
+		//val dialog = new XWTDialog(shell, null, null, classOf[JoinDialog]);
+		//dialog.open();
 	}
 
 	def onPropertiesButtonClick(event: Event) {
@@ -94,7 +109,7 @@ class ApplicationWindow extends Publisher[Action] {
 			action.command match {
 				case EVENT_CONNECT_BUTTON_CLICKED => {
 					// XXX
-					val config = application.configuration;
+					val config = ManalithIRC.config;
 					val channelsConfig = config
 						.getList("server.defaultChannels");
 					val channels = new ArrayList[String]();
@@ -106,8 +121,8 @@ class ApplicationWindow extends Publisher[Action] {
 						config.getString("server.encoding"),
 						config.getBoolean("server.verbose"), null, channels,
 						config.getString("server.nickname"));
-					val connection = application.createConnection(server,
-						ApplicationWindow.this);
+					val connection = ConnectionManager.getConnection(server);
+					connection.addEventListener(new ConnectionEventDispatcher(connection));
 
 					val serverTab = createServerTab(server.hostname,
 						connection);
@@ -120,7 +135,56 @@ class ApplicationWindow extends Publisher[Action] {
 					}
 				}
 				case EVENT_WINDOW_DISPOSED => {
-					application.disconnectAllConnection;
+					//TODO ManalithIRC 클래스에서 선언하도록 이동
+					ManalithIRC.onExit;
+				}
+			}
+		}
+	}
+
+	private class ConnectionEventDispatcher(connection: Connection) extends ListenerAdapter[PircBotX] {
+
+		@throws(classOf[Exception])
+		override def onTopic(event: TopicEvent[PircBotX]) = {
+			val view = getChannelView(event.getChannel()
+				.getName());
+			if (view != null) {
+				Display.getDefault().asyncExec(new Runnable() {
+					def run = {
+						view.setTopic(event.getTopic());
+					}
+				});
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onUserList(event: UserListEvent[PircBotX]) = {
+			val view = getChannelView(event.getChannel()
+				.getName());
+			if (view != null) {
+				Display.getDefault().asyncExec(new Runnable() {
+					def run = {
+						view.updateUserList(event.getUsers());
+					}
+				});
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onJoin(event: JoinEvent[PircBotX]) = {
+			val nick = event.getUser().getNick();
+
+			if (nick.equals(nick)) {
+				val view = getChannelView(event
+					.getChannel().getName());
+
+				if (view == null) {
+					Display.getDefault().asyncExec(new Runnable() {
+						def run = {
+							createChannelTab(event.getChannel(),
+								connection);
+						}
+					});
 				}
 			}
 		}
