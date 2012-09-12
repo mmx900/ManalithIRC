@@ -27,6 +27,7 @@ import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.TopicEvent
 import org.pircbotx.PircBotX
 import org.manalith.irc.model.ConnectionManager
+import org.manalith.irc.helper.SwtUtil
 
 class ApplicationWindow extends Publisher[Action] {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
@@ -201,7 +202,7 @@ object ApplicationWindowLoader {
 
 			val shell = control.getShell();
 			shell.layout();
-			centerInDisplay(shell);
+			SwtUtil.centerInDisplay(shell);
 
 			// run events loop
 			// shell.pack();
@@ -214,11 +215,5 @@ object ApplicationWindowLoader {
 			case e: Exception =>
 				e.printStackTrace();
 		}
-	}
-
-	def centerInDisplay(shell: Shell) {
-		val displayArea = shell.getDisplay().getClientArea();
-		shell.setBounds(displayArea.width / 4, displayArea.height / 4,
-			displayArea.width / 2, displayArea.height / 2);
 	}
 }
