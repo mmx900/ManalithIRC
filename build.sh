@@ -1,0 +1,1 @@
+mvn scala:compile compile
