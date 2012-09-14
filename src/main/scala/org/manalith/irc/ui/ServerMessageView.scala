@@ -72,8 +72,7 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 
 	setLayout(new BorderLayout(0, 0));
 
-	val messageOutput: StyledText = new StyledText(this, SWT.BORDER | SWT.H_SCROLL
-		| SWT.V_SCROLL); ;
+	val messageOutput: StyledText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 
 	messageOutput.addModifyListener(new ModifyListener() {
 		def modifyText(e: ModifyEvent) = {
