@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+	<common>
+		<messages>
+			<disconnect>bye!</disconnect>
+		</messages>
+	</common>
+	<server>
+		<host>irc.ozinger.org</host>
+		<port>8080</port>
+		<encoding>UTF-8</encoding>
+		<verbose>true</verbose>
+		<nickname>manalith_irc</nickname>
+		<defaultChannels>#setzer</defaultChannels>
+	</server>
+</properties>
