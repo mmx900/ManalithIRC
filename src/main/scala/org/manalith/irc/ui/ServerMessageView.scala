@@ -2,7 +2,6 @@ package org.manalith.irc.ui;
 
 import java.util.ArrayList
 import java.util.List
-
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.ModifyEvent
@@ -63,8 +62,8 @@ import org.pircbotx.hooks.types.GenericDCCEvent
 import org.pircbotx.hooks.types.GenericMessageEvent
 import org.pircbotx.hooks.types.GenericUserModeEvent
 import scala.collection.mutable.Publisher
-
 import swing2swt.layout.BorderLayout
+import org.manalith.irc.helper.SwtUtil
 
 class ServerMessageView(parent: Composite, style: Int, private val connection: Connection)
 	extends Composite(parent, style)
@@ -88,11 +87,7 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 	}
 
 	def printAsyncMessage(message: String) = {
-		Display.getDefault().asyncExec(new Runnable() {
-			def run = {
-				messageOutput.append(message + "\n");
-			}
-		});
+		SwtUtil.asyncExec(messageOutput.append(message + "\n"));
 	}
 
 	override def checkSubclass = {
@@ -351,10 +346,9 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 
 		@throws(classOf[Exception])
 		override def onQuit(event: QuitEvent[PircBotX]) {
-			Display.getDefault().asyncExec(new Runnable() {
-				def run = {
-					// TODO 셀프 메시지일 경우 닫기
-					/*
+			SwtUtil.asyncExec({
+				// TODO 셀프 메시지일 경우 닫기
+				/*
 					 * Connection connection = getConnection(event.getBot()
 					 * .getServer()); String channelName =
 					 * event.getChannel().getName(); String nick =
@@ -366,7 +360,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 					 * view.printMessage(String.format("%1s 님이 종료하셨습니다. (%2s)",
 					 * nick, event.getReason())); }
 					 */
-				}
 			});
 		}
 	}

@@ -90,15 +90,15 @@ class ApplicationWindow extends Publisher[Action] {
 	}
 
 	def onJoinButtonClick(event: Event) {
-//				val dlg = new InputDialog(shell, null, null, null, null);
+		//				val dlg = new InputDialog(shell, null, null, null, null);
 		//		dlg.open();
 		//		val channelName = dlg.getValue();
 		//		if (StringUtils.isNotBlank(channelName)) {
 		//			createChannelTab(channel, connection)
 		//		}
 
-//		val dialog = new XWTDialog(shell, null, null, classOf[JoinDialog]);
-//		dialog.open();
+		//		val dialog = new XWTDialog(shell, null, null, classOf[JoinDialog]);
+		//		dialog.open();
 	}
 
 	def onPropertiesButtonClick(event: Event) {
@@ -150,11 +150,8 @@ class ApplicationWindow extends Publisher[Action] {
 			val view = getChannelView(event.getChannel()
 				.getName());
 			if (view != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					def run = {
-						view.setTopic(event.getTopic());
-					}
-				});
+				SwtUtil.asyncExec(
+					view.setTopic(event.getTopic()));
 			}
 		}
 
@@ -163,11 +160,7 @@ class ApplicationWindow extends Publisher[Action] {
 			val view = getChannelView(event.getChannel()
 				.getName());
 			if (view != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					def run = {
-						view.updateUserList();
-					}
-				});
+				SwtUtil.asyncExec(view.updateUserList());
 			}
 		}
 
@@ -180,12 +173,8 @@ class ApplicationWindow extends Publisher[Action] {
 					.getChannel().getName());
 
 				if (view == null) {
-					Display.getDefault().asyncExec(new Runnable() {
-						def run = {
-							createChannelTab(event.getChannel(),
-								connection);
-						}
-					});
+					SwtUtil.asyncExec(createChannelTab(event.getChannel(),
+						connection));
 				}
 			}
 		}

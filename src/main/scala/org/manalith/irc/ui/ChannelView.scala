@@ -27,6 +27,7 @@ import org.pircbotx.hooks.events.PartEvent
 import org.pircbotx.hooks.events.QuitEvent
 import swing2swt.layout.BorderLayout
 import org.manalith.irc.helper.LogHelper
+import org.manalith.irc.helper.SwtUtil
 
 class ChannelView(parent: Composite, style: Int, val channel: Channel, private val connection: Connection)
 	extends Composite(parent, style)
@@ -83,36 +84,12 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 		messageOutput.append(actor, message, highlight);
 	}
 
-	def printAsyncMessage(actor: String, message: String) {
-		Display.getDefault().asyncExec(new Runnable() {
-			def run = {
-				printMessage(actor, message);
-			}
-		});
-	}
-
-	def printAsyncMessage(actor: String, message: String, highlight: Boolean) {
-		Display.getDefault().asyncExec(new Runnable() {
-			def run = {
-				printMessage(actor, message, highlight);
-			}
-		});
-	}
-
-	override def checkSubclass = {
-		// Disable the check that prevents subclassing of SWT components
-	}
-
 	def setTopic(topic: String) = {
 		this.topic.setText(topic);
 	}
 
 	def updateUserList() {
-		Display.getDefault().asyncExec(new Runnable() {
-			def run = {
-				userList.updateList();
-			}
-		});
+		userList.updateList();
 	}
 
 	private class ActionAdapter extends Subscriber[Action, Publisher[Action]] {
@@ -133,9 +110,9 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 	private class ChannelEventDispatcher extends ListenerAdapter[PircBotX] {
 		@throws(classOf[Exception])
 		override def onAction(event: ActionEvent[PircBotX]) {
-			if (event.getChannel() == channel.getName()) {
-				printAsyncMessage("*", String.format("%1s %2s", event.getUser()
-					.getNick(), event.getMessage()));
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(printMessage("*", String.format("%1s %2s", event.getUser()
+					.getNick(), event.getMessage())));
 			}
 		}
 
@@ -154,9 +131,11 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 						 * connection.getChannelViewList().add(view);
 						 */
 			} else {
-				printAsyncMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
-					nick, event.getReason()));
-				updateUserList();
+				SwtUtil.asyncExec({
+					printMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
+						nick, event.getReason()));
+					updateUserList();
+				});
 			}
 		}
 
@@ -165,9 +144,9 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 			if (event.getChannel() != null
 				&& event.getChannel().getName() == channel.getName()) {
 				if (event.getMessage().contains(connection.nick)) {
-					printAsyncMessage(event.getUser().getNick(), event.getMessage(), true);
+					SwtUtil.asyncExec(printMessage(event.getUser().getNick(), event.getMessage(), true));
 				} else {
-					printAsyncMessage(event.getUser().getNick(), event.getMessage());
+					SwtUtil.asyncExec(printMessage(event.getUser().getNick(), event.getMessage()));
 				}
 			}
 		}
@@ -178,17 +157,18 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 
 			if (channel.getName() == event.getChannel().getName()
 				&& nick != connection.nick) {
-				printAsyncMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
-				updateUserList();
+				SwtUtil.asyncExec({
+					printMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
+					updateUserList();
+				});
 			}
 		}
 
 		@throws(classOf[Exception])
 		override def onQuit(event: QuitEvent[PircBotX]) {
-			Display.getDefault().asyncExec(new Runnable() {
-				def run() {
-					// TODO 셀프일 경우 닫기, 타인일 경우 표시
-					/*
+			SwtUtil.asyncExec({
+				// TODO 셀프일 경우 닫기, 타인일 경우 표시
+				/*
 					 * Connection connection = getConnection(event.getBot()
 					 * .getServer()); String channelName =
 					 * event.getChannel().getName(); String nick =
@@ -200,7 +180,6 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 					 * view.printMessage(String.format("%1s 님이 종료하셨습니다. (%2s)",
 					 * nick, event.getReason())); }
 					 */
-				}
 			});
 		}
 	}
