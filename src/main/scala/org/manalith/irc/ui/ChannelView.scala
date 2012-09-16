@@ -1,22 +1,17 @@
 package org.manalith.irc.ui;
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Date
 import java.util.Set
 
-import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.asScalaSet
 import scala.collection.mutable.Publisher
 import scala.collection.mutable.Subscriber
 
+import org.apache.commons.lang3.StringUtils
 import org.eclipse.swt.SWT
-import org.eclipse.swt.custom.StyleRange
-import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
-import org.eclipse.swt.events.ModifyEvent
-import org.eclipse.swt.events.ModifyListener
 import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
@@ -41,34 +36,27 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
 	setLayout(new BorderLayout(0, 0));
-	var messageOutput: StyledText = null;
-	val userList: List = new List(this, SWT.BORDER | SWT.MULTI);
+	var messageOutput: MessageList = null;
+	val userList = new UserList(this, SWT.BORDER);
 	private var topic: Text = null;
 	var messageInput: Text = null;
-	var channelName: String = channel.getName();
+	var channelName = channel.getName();
 	private var highlightColor: Color = null;
 
 	{
 		userList.setLayoutData(BorderLayout.EAST);
 
-		messageOutput = new StyledText(this, SWT.BORDER | SWT.V_SCROLL
-			| SWT.WRAP);
-		messageOutput.addModifyListener(new ModifyListener() {
-			def modifyText(e: ModifyEvent) = {
-				messageOutput.setTopIndex(messageOutput.getLineCount() - 1);
-			}
-		});
-
+		messageOutput = new MessageList(this, SWT.BORDER);
 		messageOutput.setLayoutData(BorderLayout.CENTER);
 
 		topic = new Text(this, SWT.BORDER);
 		topic.setLayoutData(BorderLayout.NORTH);
 		topic.setText(channel.getTopic());
 
-		printMessage(String.format("당신은 대화방 %s에 참여합니다.", channel.getName()));
-		printMessage(String.format("대화방 %s의 주제는 %s 입니다.", channel.getName(),
+		printMessage("*", String.format("당신은 대화방 %s에 참여합니다.", channel.getName()));
+		printMessage("*", String.format("대화방 %s의 주제는 %s 입니다.", channel.getName(),
 			channel.getTopic()));
-		printMessage(String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)", channel
+		printMessage("*", String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)", channel
 			.getName(), channel.getTopicSetter(), new SimpleDateFormat()
 			.format(new Date(channel.getTopicTimestamp()))));
 
@@ -93,34 +81,26 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		highlightColor = getDisplay().getSystemColor(SWT.COLOR_RED);
 	}
 
-	def printMessage(message: String) = {
-		messageOutput.append(message + "\n");
+	def printMessage(actor: String, message: String) = {
+		messageOutput.append(actor, message, null);
 	}
 
-	def printMessage(message: String, color: Color) = {
-		val styleStart = messageOutput.getText().length();
-		val styleLength = message.length() + 1;
-
-		val ranges = new ArrayList[StyleRange]();
-		ranges.add(new StyleRange(styleStart, styleLength, color, null,
-			SWT.BOLD));
-		messageOutput.append(message + "\n");
-		messageOutput.replaceStyleRanges(styleStart, styleLength,
-			ranges.toArray(new Array[StyleRange](0)));
+	def printMessage(actor: String, message: String, color: Color) = {
+		messageOutput.append(actor, message, color);
 	}
 
-	def printAsyncMessage(message: String) {
+	def printAsyncMessage(actor: String, message: String) {
 		Display.getDefault().asyncExec(new Runnable() {
 			def run = {
-				printMessage(message);
+				printMessage(actor, message);
 			}
 		});
 	}
 
-	def printAsyncMessage(message: String, color: Color) {
+	def printAsyncMessage(actor: String, message: String, color: Color) {
 		Display.getDefault().asyncExec(new Runnable() {
 			def run = {
-				printMessage(message, color);
+				printMessage(actor, message, color);
 			}
 		});
 	}
@@ -134,10 +114,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 	}
 
 	def updateUserList(users: Set[User]) {
-		for (u <- users) {
-			userList.add(u.getNick());
-		}
-		userList.redraw();
+		userList.setUsers(users);
 	}
 
 	private class ActionAdapter extends Subscriber[Action, Publisher[Action]] {
@@ -145,10 +122,11 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 			action.command match {
 				case EVENT_MESSAGE_SUBMITTED => {
 					var message = messageInput.getText();
-					connection.sendMessage(channelName, message);
-					messageInput.setText("");
-					printMessage(String.format("<%1s> %2s", connection.nick,
-						message));
+					if (StringUtils.isNotBlank(message)) {
+						connection.sendMessage(channelName, message);
+						messageInput.setText("");
+						printMessage(connection.nick, message);
+					}
 				}
 			}
 		}
@@ -157,8 +135,10 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 	private class ChannelEventDispatcher extends ListenerAdapter[PircBotX] {
 		@throws(classOf[Exception])
 		override def onAction(event: ActionEvent[PircBotX]) {
-			printAsyncMessage(String.format("\t\t %1s %2s", event.getUser()
-				.getNick(), event.getMessage()));
+			if (event.getChannel() == channelName) {
+				printAsyncMessage("*", String.format("%1s %2s", event.getUser()
+					.getNick(), event.getMessage()));
+			}
 		}
 
 		@throws(classOf[Exception])
@@ -167,7 +147,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 				def run() {
 					val nick = event.getUser().getNick();
 
-					if (nick.equals(connection.nick)) {
+					if (nick == connection.nick) {
 						// TODO
 						/*
 						 * TabItem channelTab =
@@ -178,7 +158,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 						 * connection.getChannelViewList().add(view);
 						 */
 					} else {
-						printMessage(String.format("%1s 님이 퇴장하셨습니다. (%2s)",
+						printMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
 							nick, event.getReason()));
 					}
 				}
@@ -188,14 +168,11 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		@throws(classOf[Exception])
 		override def onMessage(event: MessageEvent[PircBotX]) {
 			if (event.getChannel() != null
-				&& event.getChannel().getName().equals(channelName)) {
+				&& event.getChannel().getName() == channelName) {
 				if (event.getMessage().contains(connection.nick)) {
-					printAsyncMessage(String.format("<%1s> %2s", event
-						.getUser().getNick(), event.getMessage()),
-						highlightColor);
+					printAsyncMessage(event.getUser().getNick(), event.getMessage(), highlightColor);
 				} else {
-					printAsyncMessage(String.format("<%1s> %2s", event
-						.getUser().getNick(), event.getMessage()));
+					printAsyncMessage(event.getUser().getNick(), event.getMessage());
 				}
 			}
 		}
@@ -204,9 +181,9 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		override def onJoin(event: JoinEvent[PircBotX]) {
 			val nick = event.getUser().getNick();
 
-			if (channelName.equals(event.getChannel().getName())
-				&& !nick.equals(connection.nick)) {
-				printMessage(String.format("%1s 님이 입장하셨습니다.", nick));
+			if (channelName == event.getChannel().getName()
+				&& nick != connection.nick) {
+				printMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
 			}
 		}
 
