@@ -45,7 +45,7 @@ class ApplicationWindow extends Publisher[Action] {
 
 	def getChannelView(channelName: String): ChannelView = {
 		for (view <- channelViewList) {
-			if (view.channelName == channelName) {
+			if (view.channel.getName() == channelName) {
 				return view;
 			}
 		}
@@ -90,15 +90,15 @@ class ApplicationWindow extends Publisher[Action] {
 	}
 
 	def onJoinButtonClick(event: Event) {
-		//		val dlg = new InputDialog(shell, null, null, null, null);
+//				val dlg = new InputDialog(shell, null, null, null, null);
 		//		dlg.open();
 		//		val channelName = dlg.getValue();
 		//		if (StringUtils.isNotBlank(channelName)) {
 		//			createChannelTab(channel, connection)
 		//		}
 
-		//val dialog = new XWTDialog(shell, null, null, classOf[JoinDialog]);
-		//dialog.open();
+//		val dialog = new XWTDialog(shell, null, null, classOf[JoinDialog]);
+//		dialog.open();
 	}
 
 	def onPropertiesButtonClick(event: Event) {
@@ -165,7 +165,7 @@ class ApplicationWindow extends Publisher[Action] {
 			if (view != null) {
 				Display.getDefault().asyncExec(new Runnable() {
 					def run = {
-						view.updateUserList(event.getUsers());
+						view.updateUserList();
 					}
 				});
 			}

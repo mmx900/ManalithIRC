@@ -1,9 +1,7 @@
 package org.manalith.irc.ui
 
 import java.util.Set
-
 import scala.collection.JavaConversions.asScalaSet
-
 import org.eclipse.jface.layout.TableColumnLayout
 import org.eclipse.jface.viewers.ColumnWeightData
 import org.eclipse.swt.SWT
@@ -12,8 +10,9 @@ import org.eclipse.swt.widgets.Table
 import org.eclipse.swt.widgets.TableColumn
 import org.eclipse.swt.widgets.TableItem
 import org.pircbotx.User
+import org.pircbotx.Channel
 
-class UserList(parent: Composite, style: Int) extends Composite(parent, style) {
+class UserList(parent: Composite, style: Int, channel: Channel) extends Composite(parent, style) {
 	val viewLayout = new TableColumnLayout();
 	setLayout(viewLayout);
 
@@ -23,22 +22,47 @@ class UserList(parent: Composite, style: Int) extends Composite(parent, style) {
 	table.setLinesVisible(false);
 	table.setRedraw(true);
 
-	val colType = new TableColumn(table, SWT.NONE);
+	val colPermission = new TableColumn(table, SWT.NONE);
 	val colNick = new TableColumn(table, SWT.NONE);
 
-	viewLayout.setColumnData(colType, new ColumnWeightData(10, 10, false));
+	viewLayout.setColumnData(colPermission, new ColumnWeightData(20, 20, false));
 	viewLayout.setColumnData(colNick, new ColumnWeightData(120, 120, false));
 
-	def setUsers(users: Set[User]) {
+	def updateList() {
 		setRedraw(false);
 		table.removeAll();
 
-		for (u <- users) {
-			val item = new TableItem(table, SWT.NONE);
-			item.setText(1, u.getNick());
+		for (u <- channel.getOps()) {
+			appendUser("o", u.getNick());
 		}
-		
+
+		for (u <- channel.getVoices()) {
+			appendUser("v", u.getNick());
+		}
+
+		for (u <- channel.getSuperOps()) {
+			appendUser("s", u.getNick());
+		}
+
+		for (u <- channel.getHalfOps()) {
+			appendUser("h", u.getNick());
+		}
+
+		for (u <- channel.getOwners()) {
+			appendUser("w", u.getNick());
+		}
+
+		for (u <- channel.getNormalUsers()) {
+			appendUser("", u.getNick());
+		}
+
 		setRedraw(true);
+	}
+
+	private def appendUser(permission: String, nick: String) {
+		val item = new TableItem(table, SWT.NONE);
+		item.setText(0, permission);
+		item.setText(1, nick);
 	}
 
 }

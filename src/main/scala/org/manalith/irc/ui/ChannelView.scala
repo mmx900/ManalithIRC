@@ -28,17 +28,16 @@ import org.pircbotx.hooks.events.QuitEvent
 import swing2swt.layout.BorderLayout
 import org.manalith.irc.helper.LogHelper
 
-class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection)
+class ChannelView(parent: Composite, style: Int, val channel: Channel, private val connection: Connection)
 	extends Composite(parent, style)
 	with IrcTab with Publisher[Action] with LogHelper {
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
 	setLayout(new BorderLayout(0, 0));
 	var messageOutput: MessageList = null;
-	val userList = new UserList(this, SWT.BORDER);
+	val userList = new UserList(this, SWT.BORDER, channel);
 	private var topic: Text = null;
 	var messageInput: Text = null;
-	var channelName = channel.getName();
 	private var highlightColor: Color = null;
 
 	{
@@ -111,8 +110,12 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		this.topic.setText(topic);
 	}
 
-	def updateUserList(users: Set[User]) {
-		userList.setUsers(users);
+	def updateUserList() {
+		Display.getDefault().asyncExec(new Runnable() {
+			def run = {
+				userList.updateList();
+			}
+		});
 	}
 
 	private class ActionAdapter extends Subscriber[Action, Publisher[Action]] {
@@ -121,7 +124,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 				case EVENT_MESSAGE_SUBMITTED => {
 					var message = messageInput.getText();
 					if (StringUtils.isNotBlank(message)) {
-						connection.sendMessage(channelName, message);
+						connection.sendMessage(channel.getName(), message);
 						messageInput.setText("");
 						printMessage(connection.nick, message);
 					}
@@ -133,7 +136,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 	private class ChannelEventDispatcher extends ListenerAdapter[PircBotX] {
 		@throws(classOf[Exception])
 		override def onAction(event: ActionEvent[PircBotX]) {
-			if (event.getChannel() == channelName) {
+			if (event.getChannel() == channel.getName()) {
 				printAsyncMessage("*", String.format("%1s %2s", event.getUser()
 					.getNick(), event.getMessage()));
 			}
@@ -156,13 +159,14 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 			} else {
 				printAsyncMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
 					nick, event.getReason()));
+				updateUserList();
 			}
 		}
 
 		@throws(classOf[Exception])
 		override def onMessage(event: MessageEvent[PircBotX]) {
 			if (event.getChannel() != null
-				&& event.getChannel().getName() == channelName) {
+				&& event.getChannel().getName() == channel.getName()) {
 				if (event.getMessage().contains(connection.nick)) {
 					printAsyncMessage(event.getUser().getNick(), event.getMessage(), highlightColor);
 				} else {
@@ -175,9 +179,10 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 		override def onJoin(event: JoinEvent[PircBotX]) {
 			val nick = event.getUser().getNick();
 
-			if (channelName == event.getChannel().getName()
+			if (channel.getName() == event.getChannel().getName()
 				&& nick != connection.nick) {
 				printAsyncMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
+				updateUserList();
 			}
 		}
 
