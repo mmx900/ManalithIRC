@@ -166,21 +166,12 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 
 		@throws(classOf[Exception])
 		override def onQuit(event: QuitEvent[PircBotX]) {
-			SwtUtil.asyncExec({
-				// TODO 셀프일 경우 닫기, 타인일 경우 표시
-				/*
-					 * Connection connection = getConnection(event.getBot()
-					 * .getServer()); String channelName =
-					 * event.getChannel().getName(); String nick =
-					 * event.getUser().getNick();
-					 * 
-					 * if (nick.equals(connection.getNick())) { // TODO } else {
-					 * ChannelView view =
-					 * connection.getChannelView(channelName);
-					 * view.printMessage(String.format("%1s 님이 종료하셨습니다. (%2s)",
-					 * nick, event.getReason())); }
-					 */
-			});
+			if (event.getUser().getChannels().contains(channel)) {
+				SwtUtil.asyncExec({
+					printMessage("*", String.format("%1s 님이 종료하셨습니다. (%2s)",
+						event.getUser().getNick(), event.getReason()));
+				});
+			}
 		}
 	}
 }
