@@ -38,7 +38,6 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 	val userList = new UserList(this, SWT.BORDER, channel);
 	private var topic: Text = null;
 	var messageInput: Text = null;
-	private var highlightColor: Color = null;
 
 	{
 		userList.setLayoutData(BorderLayout.EAST);
@@ -74,16 +73,14 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 
 		connection.addEventListener(new ChannelEventDispatcher());
 		subscribe(new ActionAdapter());
-
-		highlightColor = getDisplay().getSystemColor(SWT.COLOR_RED);
 	}
 
 	def printMessage(actor: String, message: String) = {
-		messageOutput.append(actor, message, null);
+		messageOutput.append(actor, message, false);
 	}
 
-	def printMessage(actor: String, message: String, color: Color) = {
-		messageOutput.append(actor, message, color);
+	def printMessage(actor: String, message: String, highlight: Boolean) = {
+		messageOutput.append(actor, message, highlight);
 	}
 
 	def printAsyncMessage(actor: String, message: String) {
@@ -94,10 +91,10 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 		});
 	}
 
-	def printAsyncMessage(actor: String, message: String, color: Color) {
+	def printAsyncMessage(actor: String, message: String, highlight: Boolean) {
 		Display.getDefault().asyncExec(new Runnable() {
 			def run = {
-				printMessage(actor, message, color);
+				printMessage(actor, message, highlight);
 			}
 		});
 	}
@@ -168,7 +165,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, private v
 			if (event.getChannel() != null
 				&& event.getChannel().getName() == channel.getName()) {
 				if (event.getMessage().contains(connection.nick)) {
-					printAsyncMessage(event.getUser().getNick(), event.getMessage(), highlightColor);
+					printAsyncMessage(event.getUser().getNick(), event.getMessage(), true);
 				} else {
 					printAsyncMessage(event.getUser().getNick(), event.getMessage());
 				}
