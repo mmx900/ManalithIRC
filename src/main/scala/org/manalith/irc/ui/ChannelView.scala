@@ -3,11 +3,9 @@ package org.manalith.irc.ui;
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Set
-
 import scala.collection.JavaConversions.asScalaSet
 import scala.collection.mutable.Publisher
 import scala.collection.mutable.Subscriber
-
 import org.apache.commons.lang3.StringUtils
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
@@ -27,12 +25,12 @@ import org.pircbotx.hooks.events.JoinEvent
 import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PartEvent
 import org.pircbotx.hooks.events.QuitEvent
-
 import swing2swt.layout.BorderLayout
+import org.manalith.irc.helper.LogHelper
 
 class ChannelView(parent: Composite, style: Int, channel: Channel, private val connection: Connection)
 	extends Composite(parent, style)
-	with IrcTab with Publisher[Action] {
+	with IrcTab with Publisher[Action] with LogHelper {
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
 	setLayout(new BorderLayout(0, 0));
@@ -143,13 +141,11 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 
 		@throws(classOf[Exception])
 		override def onPart(event: PartEvent[PircBotX]) {
-			Display.getDefault().asyncExec(new Runnable() {
-				def run() {
-					val nick = event.getUser().getNick();
+			val nick = event.getUser().getNick();
 
-					if (nick == connection.nick) {
-						// TODO
-						/*
+			if (nick == connection.nick) {
+				// TODO
+				/*
 						 * TabItem channelTab =
 						 * window.createChannelTab(channelName, channelName,
 						 * connection); ChannelView view = (ChannelView)
@@ -157,12 +153,10 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 						 * view.addActionListener(instance);
 						 * connection.getChannelViewList().add(view);
 						 */
-					} else {
-						printMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
-							nick, event.getReason()));
-					}
-				}
-			});
+			} else {
+				printAsyncMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
+					nick, event.getReason()));
+			}
 		}
 
 		@throws(classOf[Exception])
@@ -183,7 +177,7 @@ class ChannelView(parent: Composite, style: Int, channel: Channel, private val c
 
 			if (channelName == event.getChannel().getName()
 				&& nick != connection.nick) {
-				printMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
+				printAsyncMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
 			}
 		}
 
