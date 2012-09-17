@@ -170,7 +170,8 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 							s.getInt("port"),
 							s.getString("encoding"),
 							s.getBoolean("verbose"), null, channels,
-							s.getString("nickname"));
+							s.getString("nickname"),
+							s.getString("login"));
 						val connection = ConnectionManager.getConnection(server);
 						connection.addEventListener(new ConnectionEventDispatcher(connection));
 

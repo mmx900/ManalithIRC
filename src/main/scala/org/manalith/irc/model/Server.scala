@@ -1,7 +1,7 @@
 package org.manalith.irc.model;
 
 case class Server(
-	hostname: String, port: Int, encoding: String, verbose: Boolean, password: String, defaultChannels: java.util.List[String], nickname: String) {
+	hostname: String, port: Int, encoding: String, verbose: Boolean, password: String, defaultChannels: java.util.List[String], nickname: String, login:String) {
 
 	/**
 	 * Hostname과 Port를 비교하여 동일하면 true를 반환한다.

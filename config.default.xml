@@ -12,7 +12,8 @@
 			<port>8080</port>
 			<encoding>UTF-8</encoding>
 			<verbose>true</verbose>
-			<nickname>manalith_irc</nickname>
+			<nickname>ManalithIRC</nickname>
+			<login>ManalithIRC</login>
 			<channels>
 				<channel>
 					<name>#setzer</name>

@@ -18,6 +18,7 @@ class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 
 		try {
 			bot.setName(server.nickname);
+			bot.setLogin(server.login);
 			bot.connect(server.hostname, server.port, server.password);
 			for (channel <- server.defaultChannels) {
 				bot.joinChannel(channel);
