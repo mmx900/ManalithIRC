@@ -156,28 +156,33 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 				case EVENT_CONNECT_BUTTON_CLICKED => {
 					// XXX
 					val config = ManalithIRC.config;
-					val channelsConfig = config
-						.getList("server.defaultChannels");
-					val channels = new ArrayList[String]();
-					for (c <- channelsConfig) {
-						channels.add(c.toString());
-					}
-					val server = new Server(config.getString("server.host"),
-						config.getInt("server.port"),
-						config.getString("server.encoding"),
-						config.getBoolean("server.verbose"), null, channels,
-						config.getString("server.nickname"));
-					val connection = ConnectionManager.getConnection(server);
-					connection.addEventListener(new ConnectionEventDispatcher(connection));
 
-					val serverTab = createServerTab(server.hostname,
-						connection);
-					val view = serverTab
-						.getControl().asInstanceOf[ServerMessageView];
-					view.subscribe(this);
+					val servers = config.configurationsAt("servers.server");
 
-					if (connection.connect) {
+					for (s <- servers) {
+						val channels = new ArrayList[String]();
+						for (c <- s.configurationsAt("channels.channel")) {
+							channels.add(c.getString("name"));
+							//channels.add(c.getString("password"));
+						}
 
+						val server = new Server(s.getString("host"),
+							s.getInt("port"),
+							s.getString("encoding"),
+							s.getBoolean("verbose"), null, channels,
+							s.getString("nickname"));
+						val connection = ConnectionManager.getConnection(server);
+						connection.addEventListener(new ConnectionEventDispatcher(connection));
+
+						val serverTab = createServerTab(server.hostname,
+							connection);
+						val view = serverTab
+							.getControl().asInstanceOf[ServerMessageView];
+						view.subscribe(this);
+
+						if (connection.connect) {
+
+						}
 					}
 				}
 				case EVENT_WINDOW_DISPOSED => {

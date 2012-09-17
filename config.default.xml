@@ -6,12 +6,19 @@
 			<disconnect>bye!</disconnect>
 		</messages>
 	</common>
-	<server>
-		<host>irc.ozinger.org</host>
-		<port>8080</port>
-		<encoding>UTF-8</encoding>
-		<verbose>true</verbose>
-		<nickname>manalith_irc</nickname>
-		<defaultChannels>#setzer</defaultChannels>
-	</server>
+	<servers>
+		<server>
+			<host>irc.ozinger.org</host>
+			<port>8080</port>
+			<encoding>UTF-8</encoding>
+			<verbose>true</verbose>
+			<nickname>manalith_irc</nickname>
+			<channels>
+				<channel>
+					<name>#setzer</name>
+					<password></password>
+				</channel>
+			</channels>
+		</server>
+	</servers>
 </properties>

@@ -6,7 +6,7 @@ import org.apache.log4j.Logger
 import org.manalith.irc.ui.ApplicationWindowLoader
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.model.ConnectionManager
-import org.apache.commons.configuration.Configuration
+import org.apache.commons.configuration.HierarchicalConfiguration
 
 /**
  * ManalithIRC Launcher
@@ -15,7 +15,7 @@ import org.apache.commons.configuration.Configuration
  *
  */
 object ManalithIRC extends LogHelper {
-	var config: Configuration = null;
+	var config: HierarchicalConfiguration = null;
 
 	/**
 	 * @param args
