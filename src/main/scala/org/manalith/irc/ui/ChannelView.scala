@@ -29,6 +29,11 @@ import swing2swt.layout.BorderLayout
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.helper.SwtUtil
 import org.manalith.irc.helper.Resource
+import org.pircbotx.hooks.events.OpEvent
+import org.pircbotx.hooks.events.HalfOpEvent
+import org.pircbotx.hooks.events.OwnerEvent
+import org.pircbotx.hooks.events.VoiceEvent
+import org.pircbotx.hooks.events.SuperOpEvent
 
 class ChannelView(parent: Composite, style: Int, val channel: Channel, val connection: Connection)
 	extends Composite(parent, style)
@@ -36,7 +41,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
 	setLayout(new BorderLayout(0, 0));
-	private val messageOutput = new AlternativeMessageList(this, SWT.BORDER);
+	private val messageOutput = new MessageList(this, SWT.BORDER);
 	private val userList = new UserList(this, SWT.BORDER, channel);
 	private val topic = new Text(this, SWT.BORDER); ;
 	private val messageInput = new Text(this, SWT.BORDER);
@@ -157,6 +162,41 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 					printMessage("*", Resource.messages.getString("channel.on_quit").format(
 						event.getUser().getNick(), event.getReason()));
 				});
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onOp(event: OpEvent[PircBotX]) {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(updateUserList());
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onSuperOp(event: SuperOpEvent[PircBotX]) {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(updateUserList());
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onHalfOp(event: HalfOpEvent[PircBotX]) {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(updateUserList());
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onOwner(event: OwnerEvent[PircBotX]) {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(updateUserList());
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onVoice(event: VoiceEvent[PircBotX]) {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec(updateUserList());
 			}
 		}
 	}
