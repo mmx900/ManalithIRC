@@ -1,13 +1,13 @@
 package org.manalith.irc.ui;
 
-import java.util.ArrayList
-import java.util.List
+import scala.collection.mutable.Publisher
+
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.ModifyEvent
 import org.eclipse.swt.events.ModifyListener
 import org.eclipse.swt.widgets.Composite
-import org.eclipse.swt.widgets.Display
+import org.manalith.irc.helper.SwtUtil
 import org.manalith.irc.model.Connection
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
@@ -16,7 +16,6 @@ import org.pircbotx.hooks.events.ConnectEvent
 import org.pircbotx.hooks.events.DisconnectEvent
 import org.pircbotx.hooks.events.FileTransferFinishedEvent
 import org.pircbotx.hooks.events.FingerEvent
-import org.pircbotx.hooks.events.HalfOpEvent
 import org.pircbotx.hooks.events.IncomingChatRequestEvent
 import org.pircbotx.hooks.events.IncomingFileTransferEvent
 import org.pircbotx.hooks.events.InviteEvent
@@ -25,8 +24,6 @@ import org.pircbotx.hooks.events.ModeEvent
 import org.pircbotx.hooks.events.MotdEvent
 import org.pircbotx.hooks.events.NickChangeEvent
 import org.pircbotx.hooks.events.NoticeEvent
-import org.pircbotx.hooks.events.OpEvent
-import org.pircbotx.hooks.events.OwnerEvent
 import org.pircbotx.hooks.events.PingEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.events.QuitEvent
@@ -50,20 +47,17 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent
 import org.pircbotx.hooks.events.SetPrivateEvent
 import org.pircbotx.hooks.events.SetSecretEvent
 import org.pircbotx.hooks.events.SetTopicProtectionEvent
-import org.pircbotx.hooks.events.SuperOpEvent
 import org.pircbotx.hooks.events.TimeEvent
 import org.pircbotx.hooks.events.UnknownEvent
 import org.pircbotx.hooks.events.UserModeEvent
 import org.pircbotx.hooks.events.VersionEvent
-import org.pircbotx.hooks.events.VoiceEvent
 import org.pircbotx.hooks.types.GenericCTCPCommand
 import org.pircbotx.hooks.types.GenericChannelModeEvent
 import org.pircbotx.hooks.types.GenericDCCEvent
 import org.pircbotx.hooks.types.GenericMessageEvent
 import org.pircbotx.hooks.types.GenericUserModeEvent
-import scala.collection.mutable.Publisher
+
 import swing2swt.layout.BorderLayout
-import org.manalith.irc.helper.SwtUtil
 
 class ServerMessageView(parent: Composite, style: Int, private val connection: Connection)
 	extends Composite(parent, style)
@@ -121,11 +115,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 		}
 
 		@throws(classOf[Exception])
-		override def onHalfOp(event: HalfOpEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
-		}
-
-		@throws(classOf[Exception])
 		override def onIncomingChatRequest(event: IncomingChatRequestEvent[PircBotX]) {
 			printAsyncMessage(event.getClass().getName());
 		}
@@ -167,18 +156,8 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 		}
 
 		@throws(classOf[Exception])
-		override def onOp(event: OpEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
-		}
-
-		@throws(classOf[Exception])
-		override def onOwner(event: OwnerEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
-		}
-
-		@throws(classOf[Exception])
 		override def onPing(event: PingEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
+			printAsyncMessage("Ping? Poing!");
 		}
 
 		@throws(classOf[Exception])
@@ -290,11 +269,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 		}
 
 		@throws(classOf[Exception])
-		override def onSuperOp(event: SuperOpEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
-		}
-
-		@throws(classOf[Exception])
 		override def onTime(event: TimeEvent[PircBotX]) {
 			printAsyncMessage(event.getClass().getName());
 		}
@@ -311,11 +285,6 @@ class ServerMessageView(parent: Composite, style: Int, private val connection: C
 
 		@throws(classOf[Exception])
 		override def onVersion(event: VersionEvent[PircBotX]) {
-			printAsyncMessage(event.getClass().getName());
-		}
-
-		@throws(classOf[Exception])
-		override def onVoice(event: VoiceEvent[PircBotX]) {
 			printAsyncMessage(event.getClass().getName());
 		}
 

@@ -32,24 +32,24 @@ class UserList(parent: Composite, style: Int, channel: Channel) extends Composit
 		setRedraw(false);
 		table.removeAll();
 
-		for (u <- channel.getOps()) {
-			appendUser("o", u.getNick());
-		}
-
-		for (u <- channel.getVoices()) {
-			appendUser("v", u.getNick());
+		for (u <- channel.getOwners()) {
+			appendUser("w", u.getNick());
 		}
 
 		for (u <- channel.getSuperOps()) {
 			appendUser("s", u.getNick());
 		}
 
+		for (u <- channel.getOps()) {
+			appendUser("o", u.getNick());
+		}
+
 		for (u <- channel.getHalfOps()) {
 			appendUser("h", u.getNick());
 		}
 
-		for (u <- channel.getOwners()) {
-			appendUser("w", u.getNick());
+		for (u <- channel.getVoices()) {
+			appendUser("v", u.getNick());
 		}
 
 		for (u <- channel.getNormalUsers()) {
