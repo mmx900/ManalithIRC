@@ -28,8 +28,14 @@ import org.pircbotx.hooks.events.TopicEvent
 import org.pircbotx.PircBotX
 import org.manalith.irc.model.ConnectionManager
 import org.manalith.irc.helper.SwtUtil
+import org.eclipse.swt.events.DisposeListener
+import org.eclipse.swt.events.DisposeEvent
+import org.eclipse.swt.custom.CTabFolder2Adapter
+import org.eclipse.swt.custom.CTabFolderEvent
+import org.eclipse.jface.dialogs.MessageDialog
+import org.manalith.irc.helper.LogHelper
 
-class ApplicationWindow extends Publisher[Action] {
+class ApplicationWindow extends Publisher[Action] with LogHelper {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
 	private val EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
 
@@ -63,6 +69,37 @@ class ApplicationWindow extends Publisher[Action] {
 		val view = new ServerMessageView(tabFolder, SWT.NONE,
 			connection);
 		item.setControl(view);
+
+		tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
+			override def close(event: CTabFolderEvent) = {
+				if (event.item.equals(item)) {
+					event.doit = MessageDialog.openConfirm(shell, "확인",
+						"이 서버의 모든 채널 탭도 함께 닫습니다. 계속 하시겠습니까?");
+				}
+			}
+		});
+
+		item.addDisposeListener(new DisposeListener() {
+			def widgetDisposed(event: DisposeEvent) = {
+				//quit 메시지를 보내기 위해 관련 탭을 닫기 전 먼저 연결을 끊는다.
+				connection.disconnect;
+
+				val toClose = new ArrayList[ChannelView]()
+
+				for (view <- channelViewList) {
+					if (view.connection == connection) {
+						//java.util.ConcurrentModificationException 방지
+						toClose.add(view);
+					}
+				}
+
+				for (view <- toClose) {
+					//view를 포함하는 CTabItem을 dispose
+					view.getParent().dispose();
+				}
+			}
+		});
+
 		return item;
 	}
 
@@ -74,6 +111,14 @@ class ApplicationWindow extends Publisher[Action] {
 		item.setControl(view);
 		tabFolder.setSelection(item);
 		channelViewList.add(view);
+
+		item.addDisposeListener(new DisposeListener() {
+			def widgetDisposed(event: DisposeEvent) = {
+				connection.partChannel(channel);
+				channelViewList.remove(view);
+			}
+		});
+
 		return item;
 	}
 

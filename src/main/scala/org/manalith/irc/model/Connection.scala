@@ -1,14 +1,13 @@
 package org.manalith.irc.model;
 
 import java.io.IOException
-
 import scala.collection.JavaConversions.asScalaBuffer
-
 import org.manalith.irc.helper.LogHelper
 import org.pircbotx.PircBotX
 import org.pircbotx.exception.IrcException
 import org.pircbotx.exception.NickAlreadyInUseException
 import org.pircbotx.hooks.Listener
+import org.pircbotx.Channel
 
 class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 
@@ -43,6 +42,10 @@ class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 		if (bot.isConnected()) {
 			bot.quitServer(reason);
 		}
+	}
+
+	def partChannel(channel: Channel) = {
+		bot.partChannel(channel)
 	}
 
 	def disconnect = {

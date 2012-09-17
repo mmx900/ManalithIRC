@@ -29,7 +29,7 @@ import swing2swt.layout.BorderLayout
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.helper.SwtUtil
 
-class ChannelView(parent: Composite, style: Int, val channel: Channel, private val connection: Connection)
+class ChannelView(parent: Composite, style: Int, val channel: Channel, val connection: Connection)
 	extends Composite(parent, style)
 	with IrcTab with Publisher[Action] with LogHelper {
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
