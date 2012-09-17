@@ -120,17 +120,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 		override def onPart(event: PartEvent[PircBotX]) {
 			val nick = event.getUser().getNick();
 
-			if (nick == connection.nick) {
-				// TODO
-				/*
-						 * TabItem channelTab =
-						 * window.createChannelTab(channelName, channelName,
-						 * connection); ChannelView view = (ChannelView)
-						 * channelTab.getControl();
-						 * view.addActionListener(instance);
-						 * connection.getChannelViewList().add(view);
-						 */
-			} else {
+			if (channel.getName() == event.getChannel().getName() && nick != connection.nick) {
 				SwtUtil.asyncExec({
 					printMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
 						nick, event.getReason()));
