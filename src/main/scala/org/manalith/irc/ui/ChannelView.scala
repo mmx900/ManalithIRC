@@ -34,6 +34,7 @@ import org.pircbotx.hooks.events.HalfOpEvent
 import org.pircbotx.hooks.events.OwnerEvent
 import org.pircbotx.hooks.events.VoiceEvent
 import org.pircbotx.hooks.events.SuperOpEvent
+import org.pircbotx.hooks.events.TopicEvent
 
 class ChannelView(parent: Composite, style: Int, val channel: Channel, val connection: Connection)
 	extends Composite(parent, style)
@@ -197,6 +198,16 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 		override def onVoice(event: VoiceEvent[PircBotX]) {
 			if (event.getChannel().getName() == channel.getName()) {
 				SwtUtil.asyncExec(updateUserList());
+			}
+		}
+
+		@throws(classOf[Exception])
+		override def onTopic(event: TopicEvent[PircBotX]) = {
+			if (event.getChannel().getName() == channel.getName()) {
+				SwtUtil.asyncExec({
+					printMessage("*", Resource.messages.getString("channel.on_topic").format(event.getUser().getNick(), event.getTopic()));
+					setTopic(event.getTopic());
+				});
 			}
 		}
 	}

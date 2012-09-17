@@ -7,4 +7,5 @@
 	<entry key="channel.on_join">%1s 님이 입장하셨습니다.</entry>
 	<entry key="channel.on_part">%1s 님이 퇴장하셨습니다. (%2s)</entry>
 	<entry key="channel.on_quit">%1s 님이 종료하셨습니다. (%2s)</entry>
+	<entry key="channel.on_topic">%1s님이 주제를 %2s (으)로 변경했습니다.</entry>
 </properties>

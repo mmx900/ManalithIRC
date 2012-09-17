@@ -195,17 +195,6 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 	}
 
 	private class ConnectionEventDispatcher(connection: Connection) extends ListenerAdapter[PircBotX] {
-
-		@throws(classOf[Exception])
-		override def onTopic(event: TopicEvent[PircBotX]) = {
-			val view = getChannelView(event.getChannel()
-				.getName());
-			if (view != null) {
-				SwtUtil.asyncExec(
-					view.setTopic(event.getTopic()));
-			}
-		}
-
 		@throws(classOf[Exception])
 		override def onUserList(event: UserListEvent[PircBotX]) = {
 			val view = getChannelView(event.getChannel()
