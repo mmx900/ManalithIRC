@@ -11,11 +11,17 @@ class Theme {
 	var selectionBackground: Color = null;
 	var newData: Color = null;
 	var newMessage: Color = null;
+	var local18: Color = null;
+	var local19: Color = null;
+	var local29: Color = null;
 }
 
 object Theme {
 	private val theme = new Theme();
 	private val device = Display.getCurrent();
+	theme.local18 = new Color(device, 54, 54, 178);
+	theme.local19 = new Color(device, 42, 140, 42);
+	theme.local29 = new Color(device, 176, 55, 176);
 	theme.messageForeground = new Color(device, 0, 0, 0);
 	theme.messageBackground = new Color(device, 240, 240, 240);
 	theme.selectionForeground = new Color(device, 255, 255, 255);

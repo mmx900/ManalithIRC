@@ -100,6 +100,8 @@ class MessageList(parent: Composite, style: Int) extends Composite(parent, style
 		if (highlight) {
 			item.setForeground(1, Theme.current.newMessage);
 			item.setForeground(2, Theme.current.newMessage);
+		} else {
+			item.setForeground(1, Theme.current.local18);
 		}
 
 		setRedraw(true);
