@@ -36,18 +36,15 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 	val EVENT_MESSAGE_SUBMITTED = "MessageSubmitted";
 
 	setLayout(new BorderLayout(0, 0));
-	var messageOutput: MessageList = null;
-	val userList = new UserList(this, SWT.BORDER, channel);
-	private var topic: Text = null;
-	var messageInput: Text = null;
+	private val messageOutput = new AlternativeMessageList(this, SWT.BORDER);
+	private val userList = new UserList(this, SWT.BORDER, channel);
+	private val topic = new Text(this, SWT.BORDER); ;
+	private val messageInput = new Text(this, SWT.BORDER);
 
 	{
 		userList.setLayoutData(BorderLayout.EAST);
-
-		messageOutput = new MessageList(this, SWT.BORDER);
 		messageOutput.setLayoutData(BorderLayout.CENTER);
 
-		topic = new Text(this, SWT.BORDER);
 		topic.setLayoutData(BorderLayout.NORTH);
 		topic.setText(channel.getTopic());
 
@@ -58,7 +55,6 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 			.getName(), channel.getTopicSetter(), new SimpleDateFormat()
 			.format(new Date(channel.getTopicTimestamp()))));
 
-		messageInput = new Text(this, SWT.BORDER);
 		messageInput.setLayoutData(BorderLayout.SOUTH);
 		messageInput.addKeyListener(new KeyListener() {
 			def keyPressed(e: KeyEvent) {
