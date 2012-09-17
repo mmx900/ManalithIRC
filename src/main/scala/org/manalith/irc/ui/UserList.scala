@@ -1,15 +1,14 @@
 package org.manalith.irc.ui
 
-import java.util.Set
 import scala.collection.JavaConversions.asScalaSet
+
 import org.eclipse.jface.layout.TableColumnLayout
-import org.eclipse.jface.viewers.ColumnWeightData
+import org.eclipse.jface.viewers.ColumnPixelData
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Table
 import org.eclipse.swt.widgets.TableColumn
 import org.eclipse.swt.widgets.TableItem
-import org.pircbotx.User
 import org.pircbotx.Channel
 
 class UserList(parent: Composite, style: Int, channel: Channel) extends Composite(parent, style) {
@@ -25,8 +24,8 @@ class UserList(parent: Composite, style: Int, channel: Channel) extends Composit
 	val colPermission = new TableColumn(table, SWT.NONE);
 	val colNick = new TableColumn(table, SWT.NONE);
 
-	viewLayout.setColumnData(colPermission, new ColumnWeightData(20, 20, false));
-	viewLayout.setColumnData(colNick, new ColumnWeightData(120, 120, false));
+	viewLayout.setColumnData(colPermission, new ColumnPixelData(20, false));
+	viewLayout.setColumnData(colNick, new ColumnPixelData(120, false));
 
 	def updateList() {
 		setRedraw(false);
