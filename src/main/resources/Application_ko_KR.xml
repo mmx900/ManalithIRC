@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="toolbar.connect">연결</entry>
+	<entry key="toolbar.join">입장</entry>
+	<entry key="toolbar.preferences">환경설정</entry>
+</properties>

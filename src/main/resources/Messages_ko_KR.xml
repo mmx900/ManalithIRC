@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="channel.info_join">당신은 대화방 %s에 참여합니다.</entry>
+	<entry key="channel.info_subject">대화방 %s의 주제는 %s 입니다.</entry>
+	<entry key="channel.info_topic">대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)</entry>
+	<entry key="channel.on_join">%1s 님이 입장하셨습니다.</entry>
+	<entry key="channel.on_part">%1s 님이 퇴장하셨습니다. (%2s)</entry>
+	<entry key="channel.on_quit">%1s 님이 종료하셨습니다. (%2s)</entry>
+</properties>

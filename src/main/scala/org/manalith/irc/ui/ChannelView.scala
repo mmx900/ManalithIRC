@@ -28,6 +28,7 @@ import org.pircbotx.hooks.events.QuitEvent
 import swing2swt.layout.BorderLayout
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.helper.SwtUtil
+import org.manalith.irc.helper.Resource
 
 class ChannelView(parent: Composite, style: Int, val channel: Channel, val connection: Connection)
 	extends Composite(parent, style)
@@ -50,10 +51,10 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 		topic.setLayoutData(BorderLayout.NORTH);
 		topic.setText(channel.getTopic());
 
-		printMessage("*", String.format("당신은 대화방 %s에 참여합니다.", channel.getName()));
-		printMessage("*", String.format("대화방 %s의 주제는 %s 입니다.", channel.getName(),
+		printMessage("*", Resource.messages.getString("channel.info_join").format(channel.getName()));
+		printMessage("*", Resource.messages.getString("channel.info_subject").format(channel.getName(),
 			channel.getTopic()));
-		printMessage("*", String.format("대화방 %s의 주제는 %s님이 설정했습니다. (시간: %s)", channel
+		printMessage("*", Resource.messages.getString("channel.info_topic").format(channel
 			.getName(), channel.getTopicSetter(), new SimpleDateFormat()
 			.format(new Date(channel.getTopicTimestamp()))));
 
@@ -111,7 +112,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 		@throws(classOf[Exception])
 		override def onAction(event: ActionEvent[PircBotX]) {
 			if (event.getChannel().getName() == channel.getName()) {
-				SwtUtil.asyncExec(printMessage("*", String.format("%1s %2s", event.getUser()
+				SwtUtil.asyncExec(printMessage("*", "%1s %2s".format(event.getUser()
 					.getNick(), event.getMessage())));
 			}
 		}
@@ -122,8 +123,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 
 			if (channel.getName() == event.getChannel().getName() && nick != connection.nick) {
 				SwtUtil.asyncExec({
-					printMessage("*", String.format("%1s 님이 퇴장하셨습니다. (%2s)",
-						nick, event.getReason()));
+					printMessage("*", Resource.messages.getString("channel.on_part").format(nick, event.getReason()));
 					updateUserList();
 				});
 			}
@@ -148,7 +148,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 			if (channel.getName() == event.getChannel().getName()
 				&& nick != connection.nick) {
 				SwtUtil.asyncExec({
-					printMessage("*", String.format("%1s 님이 입장하셨습니다.", nick));
+					printMessage("*", Resource.messages.getString("channel.on_join").format(nick));
 					updateUserList();
 				});
 			}
@@ -158,7 +158,7 @@ class ChannelView(parent: Composite, style: Int, val channel: Channel, val conne
 		override def onQuit(event: QuitEvent[PircBotX]) {
 			if (event.getUser().getChannels().contains(channel)) {
 				SwtUtil.asyncExec({
-					printMessage("*", String.format("%1s 님이 종료하셨습니다. (%2s)",
+					printMessage("*", Resource.messages.getString("channel.on_quit").format(
 						event.getUser().getNick(), event.getReason()));
 				});
 			}
