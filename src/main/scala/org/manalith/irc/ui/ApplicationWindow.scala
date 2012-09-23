@@ -1,7 +1,6 @@
 package org.manalith.irc.ui;
 
 import java.util.ArrayList
-import java.util.List
 import scala.collection.JavaConversions.asScalaBuffer
 import org.eclipse.e4.xwt.IConstants
 import org.eclipse.e4.xwt.XWT
@@ -39,7 +38,7 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
 	private val EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
 
-	val channelViewList: List[ChannelView] = new ArrayList[ChannelView]();
+	lazy val channelViewList = new ArrayList[ChannelView]();
 
 	subscribe(new ApplicationWindowActionListener());
 
