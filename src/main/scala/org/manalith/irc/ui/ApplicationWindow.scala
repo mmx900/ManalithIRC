@@ -3,13 +3,15 @@ package org.manalith.irc.ui;
 import java.util.ArrayList
 
 import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.mutable.Subscriber
+import scala.collection.mutable.HashMap
 import scala.collection.mutable.Publisher
+import scala.collection.mutable.Subscriber
 
-import org.eclipse.e4.xwt.annotation.UI
 import org.eclipse.e4.xwt.IConstants
 import org.eclipse.e4.xwt.XWT
+import org.eclipse.e4.xwt.annotation.UI
 import org.eclipse.jface.dialogs.MessageDialog
+import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.CTabFolder
 import org.eclipse.swt.custom.CTabFolder2Adapter
 import org.eclipse.swt.custom.CTabFolderEvent
@@ -18,24 +20,28 @@ import org.eclipse.swt.events.DisposeEvent
 import org.eclipse.swt.events.DisposeListener
 import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Shell
-import org.eclipse.swt.SWT
+import org.manalith.irc.ManalithIRC
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.helper.SwtUtil
 import org.manalith.irc.model.Connection
 import org.manalith.irc.model.ConnectionManager
 import org.manalith.irc.model.Server
-import org.manalith.irc.ManalithIRC
-import org.pircbotx.hooks.events.JoinEvent
-import org.pircbotx.hooks.events.UserListEvent
-import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.Channel
 import org.pircbotx.PircBotX
+import org.pircbotx.hooks.ListenerAdapter
+import org.pircbotx.hooks.events.JoinEvent
+import org.pircbotx.hooks.events.UserListEvent
 
 class ApplicationWindow extends Publisher[Action] with LogHelper {
 	private val EVENT_WINDOW_DISPOSED = "WindowDisposed";
 	private val EVENT_CONNECT_BUTTON_CLICKED = "ConnectButtonClicked";
 
-	lazy val channelTabs = new ArrayList[CTabItem]();
+	/**
+	 * CTabItem에서 바로 getControl()을 이용해 ChannelView를 구할 경우 Invalid thread access SWT예외가 발생할 수 있다.
+	 * 이 경우 getChannelView 등의 메서드에서 제약이 발생하기 때문에 Map을 사용한다.
+	 * TODO UI요소와의 결합 제거
+	 */
+	lazy val channelTabs = new HashMap[CTabItem, ChannelView]();
 
 	subscribe(new ApplicationWindowActionListener());
 
@@ -46,19 +52,11 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 	private var tabFolder: CTabFolder = null;
 
 	def getChannelView(channelName: String): ChannelView = {
-		//return channelViewList.filter(v => v.channel.getName() == channelName);
-		for (tab <- channelTabs) {
-			if (tab.getControl().asInstanceOf[ChannelView].channel.getName() == channelName) {
-				return tab.getControl().asInstanceOf[ChannelView];
-			}
+		return channelTabs.find(t => t._2.channel.getName() == channelName) match {
+			case Some(x) => return x._2;
+			case None => return null;
 		}
-
-		return null;
 	}
-
-	/**
-	 * Open the window.
-	 */
 
 	def createServerTab(title: String, connection: Connection): CTabItem = {
 		val item = new CTabItem(tabFolder, SWT.CLOSE);
@@ -82,8 +80,8 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 				connection.disconnect;
 
 				channelTabs
-					.filter(t => t.getControl().asInstanceOf[ChannelView].connection == connection)
-					.foreach(t => t.dispose())
+					.filter(t => t._2.connection == connection)
+					.foreach(t => t._1.dispose())
 			}
 		});
 
@@ -97,7 +95,7 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 			connection);
 		tab.setControl(view);
 		tabFolder.setSelection(tab);
-		channelTabs += tab;
+		channelTabs += ((tab, view));
 
 		tab.addDisposeListener(new DisposeListener() {
 			def widgetDisposed(event: DisposeEvent) = {
@@ -210,7 +208,7 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 	}
 }
 
-object ApplicationWindowLoader {
+object ApplicationWindowLoader extends LogHelper {
 	def load = {
 		val url = classOf[ApplicationWindow].getResource(classOf[ApplicationWindow]
 			.getSimpleName() + IConstants.XWT_EXTENSION_SUFFIX);
@@ -231,7 +229,7 @@ object ApplicationWindowLoader {
 			}
 		} catch {
 			case e: Exception =>
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 		}
 	}
 }
