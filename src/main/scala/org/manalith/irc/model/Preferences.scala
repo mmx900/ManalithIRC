@@ -1,7 +1,5 @@
 package org.manalith.irc.model
 
-import java.util.ArrayList
-
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.mutable.HashSet
 
@@ -15,24 +13,18 @@ object Preferences extends LogHelper {
 	def servers = {
 		if (_servers == null) {
 			_servers = new HashSet[Server]();
-			val servers = config.configurationsAt("servers.server");
+			
+			config.configurationsAt("servers.server").foreach(s => {
+				val channels = s.configurationsAt("channels.channel").map(c => new Channel(c.getString("name"), c.getString("password")))
 
-			for (s <- servers) {
-				val channels = new ArrayList[String]();
-				for (c <- s.configurationsAt("channels.channel")) {
-					channels += c.getString("name");
-					//channels += c.getString("password");
-				}
-
-				val server = new Server(s.getString("host"),
+				_servers += new Server(s.getString("host"),
 					s.getInt("port"),
 					s.getString("encoding"),
 					s.getBoolean("verbose"), null, channels,
 					s.getString("nickname"),
-					s.getString("login"));
+					s.getString("login"))
+			});
 
-				_servers += server;
-			}
 		}
 
 		_servers;

@@ -7,7 +7,6 @@ import org.pircbotx.PircBotX
 import org.pircbotx.exception.IrcException
 import org.pircbotx.exception.NickAlreadyInUseException
 import org.pircbotx.hooks.Listener
-import org.pircbotx.Channel
 
 class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 
@@ -21,7 +20,11 @@ class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 			bot.setLogin(server.login);
 			bot.connect(server.hostname, server.port, server.password);
 			for (channel <- server.defaultChannels) {
-				bot.joinChannel(channel);
+				if (channel.password == null) {
+					bot.joinChannel(channel.name);
+				} else {
+					bot.joinChannel(channel.name, channel.password);
+				}
 			}
 
 			return true;
@@ -45,7 +48,7 @@ class Connection(val server: Server, bot: PircBotX) extends LogHelper {
 		}
 	}
 
-	def partChannel(channel: Channel) = {
+	def partChannel(channel: org.pircbotx.Channel) = {
 		bot.partChannel(channel)
 	}
 
