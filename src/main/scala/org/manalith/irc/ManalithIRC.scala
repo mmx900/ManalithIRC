@@ -2,11 +2,10 @@ package org.manalith.irc;
 
 import org.apache.commons.configuration.ConfigurationException
 import org.apache.commons.configuration.XMLConfiguration
-import org.apache.log4j.Logger
-import org.manalith.irc.ui.ApplicationWindowLoader
 import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.model.ConnectionManager
-import org.apache.commons.configuration.HierarchicalConfiguration
+import org.manalith.irc.model.Preferences
+import org.manalith.irc.ui.ApplicationWindowLoader
 
 /**
  * ManalithIRC Launcher
@@ -15,14 +14,12 @@ import org.apache.commons.configuration.HierarchicalConfiguration
  *
  */
 object ManalithIRC extends LogHelper {
-	var config: HierarchicalConfiguration = null;
-
 	/**
 	 * @param args
 	 */
 	def main(args: Array[String]) {
 		try {
-			config = new XMLConfiguration("config.xml");
+			Preferences.config = new XMLConfiguration("config.xml");
 			ApplicationWindowLoader.load;
 		} catch {
 			case e: ConfigurationException =>
@@ -31,7 +28,6 @@ object ManalithIRC extends LogHelper {
 	}
 
 	def onExit() {
-		ConnectionManager.disconnectAllConnection(config
-			.getString("common.messages.disconnect"));
+		ConnectionManager.disconnectAllConnection(Preferences.messages_disconnect);
 	}
 }

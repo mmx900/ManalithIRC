@@ -1,8 +1,5 @@
 package org.manalith.irc.ui;
 
-import java.util.ArrayList
-
-import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.Publisher
 import scala.collection.mutable.Subscriber
@@ -25,7 +22,7 @@ import org.manalith.irc.helper.LogHelper
 import org.manalith.irc.helper.SwtUtil
 import org.manalith.irc.model.Connection
 import org.manalith.irc.model.ConnectionManager
-import org.manalith.irc.model.Server
+import org.manalith.irc.model.Preferences
 import org.pircbotx.Channel
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
@@ -141,31 +138,13 @@ class ApplicationWindow extends Publisher[Action] with LogHelper {
 		def notify(pub: Publisher[Action], action: Action) = {
 			action.command match {
 				case EVENT_CONNECT_BUTTON_CLICKED => {
-					// XXX
-					val config = ManalithIRC.config;
-
-					val servers = config.configurationsAt("servers.server");
-
-					for (s <- servers) {
-						val channels = new ArrayList[String]();
-						for (c <- s.configurationsAt("channels.channel")) {
-							channels += c.getString("name");
-							//channels += c.getString("password");
-						}
-
-						val server = new Server(s.getString("host"),
-							s.getInt("port"),
-							s.getString("encoding"),
-							s.getBoolean("verbose"), null, channels,
-							s.getString("nickname"),
-							s.getString("login"));
+					// TODO 서버 다이얼로그 표시 필요
+					for (server <- Preferences.servers) {
 						val connection = ConnectionManager.getConnection(server);
 						connection.addEventListener(new ConnectionEventDispatcher(connection));
 
-						val serverTab = createServerTab(server.hostname,
-							connection);
-						val view = serverTab
-							.getControl().asInstanceOf[ServerMessageView];
+						val serverTab = createServerTab(server.hostname, connection);
+						val view = serverTab.getControl().asInstanceOf[ServerMessageView];
 						view.subscribe(this);
 
 						if (connection.connect) {
