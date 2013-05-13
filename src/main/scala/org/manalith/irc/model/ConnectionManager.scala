@@ -13,7 +13,7 @@ object ConnectionManager extends LogHelper {
 		connections.find(c => c.server == server) match {
 			case Some(c) => return c;
 			case None => {
-				val connection = new Connection(server, manager.createBot(server.hostname, server.port));
+				val connection = new Connection(server, manager.createBot(server.hostname, server.port).getBot());
 				connections.add(connection);
 
 				return connection;
